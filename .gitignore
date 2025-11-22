@@ -33,3 +33,10 @@ public/uploads/*
 # Railway
 .railway/
 
+# Local development scripts (optional - keep for local dev)
+# create_env_file.bat
+# setup-mailtrap.ps1
+# SETUP_XAMPP.bat
+# START_SERVER.bat
+# server-simple.php
+
