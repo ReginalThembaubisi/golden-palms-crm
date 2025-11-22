@@ -37,4 +37,5 @@ EXPOSE 8080
 
 # Start command (Railway provides $PORT via environment variable)
 # Use shell form to ensure PORT variable is expanded at runtime
-CMD sh -c "exec php -S 0.0.0.0:\${PORT:-8080} -t . index.php"
+# Add error reporting for debugging
+CMD sh -c "php -d display_errors=1 -d error_reporting=E_ALL -S 0.0.0.0:\${PORT:-8080} -t . index.php 2>&1"
