@@ -36,9 +36,9 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN a2enmod rewrite
 COPY .htaccess .htaccess
 
-# Expose port
-EXPOSE 8080
+# Expose port (Railway provides $PORT)
+EXPOSE $PORT
 
-# Start command
-CMD php -S 0.0.0.0:8080 -t . index.php
+# Start command (Railway provides $PORT via environment variable)
+CMD php -S 0.0.0.0:${PORT:-8080} -t . index.php
 
