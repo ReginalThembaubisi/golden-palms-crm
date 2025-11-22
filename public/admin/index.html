@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Golden Palms CRM</title>
+    <style>
+        /* Inline critical CSS to ensure it loads */
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .dashboard { display: none; }
+    </style>
+    <link rel="stylesheet" href="/css/admin.css?v=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏖️</text></svg>">
+</head>
+<body>
+    <!-- Login Screen (shown by default) -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1><i class="fas fa-palm-tree"></i> Golden Palms CRM</h1>
+                    <p>Admin Dashboard</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" name="username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                <div class="login-footer">
+                    <p>Default: admin / admin123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-palm-tree"></i> Golden Palms</h2>
+                <p>CRM Dashboard</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard-home" class="nav-item active" data-page="dashboard-home">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#leads" class="nav-item" data-page="leads">
+                    <i class="fas fa-users"></i> Leads
+                    <span class="badge" id="leadsBadge">0</span>
+                </a>
+                <a href="#bookings" class="nav-item" data-page="bookings">
+                    <i class="fas fa-calendar-alt"></i> Bookings
+                </a>
+                <a href="#guests" class="nav-item" data-page="guests">
+                    <i class="fas fa-address-book"></i> Guests
+                </a>
+                <a href="#campaigns" class="nav-item" data-page="campaigns">
+                    <i class="fas fa-envelope"></i> Campaigns
+                </a>
+                <a href="#reviews" class="nav-item" data-page="reviews">
+                    <i class="fas fa-star"></i> Reviews
+                </a>
+                <a href="#website" class="nav-item" data-page="website">
+                    <i class="fas fa-edit"></i> Website Editor
+                </a>
+                <a href="/" class="nav-item" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View Customer Website
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Admin</span>
+                </div>
+                <button id="logoutBtn" class="btn btn-outline btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="top-bar-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Home Page -->
+            <div id="page-dashboard-home" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statLeadsToday">0</h3>
+                            <p>Leads Today</p>
+                            <span class="stat-change positive">+12%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statBookingsToday">0</h3>
+                            <p>Bookings Today</p>
+                            <span class="stat-change positive">+5%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statOccupancy">0%</h3>
+                            <p>Occupancy Rate</p>
+                            <span class="stat-change">This Month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statRevenue">R0</h3>
+                            <p>Revenue This Month</p>
+                            <span class="stat-change positive">+18%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Recent Leads</h3>
+                        <div id="recentLeads" class="list-container">
+                            <p class="empty-state">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Upcoming Check-ins</h3>
+                        <div id="upcomingCheckins" class="list-container">
+                            <p class="empty-state">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leads Page -->
+            <div id="page-leads" class="page">
+                <div class="page-header">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="addLeadBtn">
+                            <i class="fas fa-plus"></i> Add Lead
+                        </button>
+                        <div class="filters">
+                            <select id="filterSource" class="filter-select">
+                                <option value="">All Sources</option>
+                                <option value="1">Meta Ads</option>
+                                <option value="2">Website</option>
+                            </select>
+                            <select id="filterStatus" class="filter-select">
+                                <option value="">Active Leads (Excludes Converted/Lost)</option>
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="lost">Lost/Cancelled</option>
+                                <option value="converted">Converted</option>
+                                <option value="all">All Status (Including Converted/Lost)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="leadsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Source</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center">Loading leads...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bookings Page -->
+            <div id="page-bookings" class="page">
+                <div class="page-header">
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="addBookingBtn">
+                            <i class="fas fa-plus"></i> New Booking
+                        </button>
+                        <div class="view-toggle">
+                            <button class="btn-toggle" data-view="calendar">
+                                <i class="fas fa-calendar"></i> Calendar
+                            </button>
+                            <button class="btn-toggle active" data-view="list">
+                                <i class="fas fa-list"></i> List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="bookingsCalendar" class="calendar-view" style="display: none;">
+                    <div id="calendarContainer">Calendar view coming soon...</div>
+                </div>
+                <div id="bookingsList" class="list-view">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Guest</th>
+                                <th>Unit</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Loading bookings...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Guests Page -->
+            <div id="page-guests" class="page">
+                <div class="page-header">
+                    <div class="page-actions">
+                        <input type="search" id="guestSearch" class="search-input" placeholder="Search guests...">
+                        <button class="btn btn-primary" id="addGuestBtn">
+                            <i class="fas fa-plus"></i> Add Guest
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="guestsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Bookings</th>
+                                <th>Total Nights</th>
+                                <th>Last Visit</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Loading guests...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Campaigns Page -->
+            <div id="page-campaigns" class="page">
+                <div class="page-header">
+                    <button class="btn btn-primary" id="createCampaignBtn">
+                        <i class="fas fa-plus"></i> Create Campaign
+                    </button>
+                </div>
+                <div class="campaigns-grid" id="campaignsGrid">
+                    <p class="empty-state">Loading campaigns...</p>
+                </div>
+            </div>
+
+            <!-- Reviews Page -->
+            <div id="page-reviews" class="page">
+                <div class="page-header">
+                    <h2>Review Management</h2>
+                    <button class="btn btn-primary" id="sendReviewRequestBtn">
+                        <i class="fas fa-paper-plane"></i> Send Review Request
+                    </button>
+                </div>
+                <div class="reviews-stats">
+                    <div class="stat-mini">
+                        <h4>Total Reviews</h4>
+                        <p id="totalReviews">0</p>
+                    </div>
+                    <div class="stat-mini">
+                        <h4>Average Rating</h4>
+                        <p id="avgRating">0.0</p>
+                    </div>
+                    <div class="stat-mini">
+                        <h4>Requests Sent</h4>
+                        <p id="requestsSent">0</p>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Guest</th>
+                                <th>Platform</th>
+                                <th>Rating</th>
+                                <th>Review</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviewsTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center">Loading reviews...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Website Editor Page -->
+            <div id="page-website" class="page">
+                <div class="page-header">
+                    <h2>Website Content Editor</h2>
+                </div>
+                <div class="editor-container">
+                    <div class="editor-sidebar">
+                        <h3>Pages</h3>
+                        <ul class="page-list">
+                            <li><a href="#" data-page="homepage" class="active">Homepage</a></li>
+                            <li><a href="#" data-page="rates">Rates</a></li>
+                            <li><a href="#" data-page="specials">Specials</a></li>
+                        </ul>
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                            <small style="color: #6c757d;">
+                                <strong>Note:</strong> Select a page, then choose a specific section to edit. 
+                                Changes are saved as new versions and can be published immediately.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="editor-main">
+                        <div class="editor-toolbar">
+                            <div>
+                                <strong id="currentPageName">Homepage</strong>
+                                <small style="color: #6c757d; display: block;">Select a section to edit</small>
+                            </div>
+                            <div>
+                                <select id="sectionSelector" class="filter-select" style="margin-right: 10px;">
+                                    <option value="">Select Section...</option>
+                                </select>
+                                <button class="btn btn-outline" id="previewBtn">
+                                    <i class="fas fa-eye"></i> Preview
+                                </button>
+                                <button class="btn btn-primary" id="saveBtn">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-content-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="editor-content">
+                                <div style="margin-bottom: 15px; padding: 20px; background: linear-gradient(135deg, #1a5490 0%, #2a5298 100%); border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(26, 84, 144, 0.3);" id="sectionInfo">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <span style="background: #d4af37; color: #1a5490; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" id="sectionOrder">1</span>
+                                        <div style="flex: 1;">
+                                            <h3 style="color: white; margin: 0; font-size: 1.3rem; font-weight: 700;" id="currentSectionName">-</h3>
+                                            <p style="color: rgba(255,255,255,0.9); margin: 4px 0 0 0; font-size: 0.9rem;" id="sectionDescription">-</p>
+                                        </div>
+                                    </div>
+                                    <div style="padding: 12px; background: rgba(255,255,255,0.15); border-left: 4px solid #d4af37; border-radius: 4px; margin-bottom: 12px; backdrop-filter: blur(10px);">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <i class="fas fa-map-marker-alt" style="color: #d4af37; font-size: 1.1rem;"></i>
+                                            <span style="color: white; font-weight: 600; font-size: 0.95rem;" id="sectionLocationText">-</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 10px;">
+                                        <button onclick="viewSectionOnWebsite()" style="flex: 1; padding: 10px 16px; background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px);">
+                                            <i class="fas fa-external-link-alt"></i> View on Website
+                                        </button>
+                                        <button onclick="scrollToSection()" style="flex: 1; padding: 10px 16px; background: #d4af37; color: #1a5490; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);">
+                                            <i class="fas fa-crosshairs"></i> Find on Page
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Text Content Editor -->
+                                <div id="textEditorContainer">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                        <i class="fas fa-edit"></i> Edit Content:
+                                    </label>
+                                    <!-- Special editor for rate prices -->
+                                    <div id="ratePriceEditor" style="display: none; margin-bottom: 15px;">
+                                        <div style="background: #fffbf0; border: 2px solid #d4af37; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a5490;">
+                                                <i class="fas fa-money-bill-wave"></i> Price (e.g., R850 or R1,200):
+                                            </label>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <span style="font-size: 1.2rem; color: #d4af37; font-weight: 600;">R</span>
+                                                <input type="text" id="ratePriceInput" class="form-control" placeholder="850" style="flex: 1; padding: 12px; border: 2px solid #d4af37; border-radius: 5px; font-size: 1.1rem; font-weight: 600;" inputmode="numeric">
+                                            </div>
+                                            <small style="display: block; margin-top: 8px; color: #666;">
+                                                <i class="fas fa-info-circle"></i> Enter only the number (e.g., 850 or 1,200). The "R" and "/night" will be added automatically.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <textarea id="contentEditor" class="content-editor" rows="20" placeholder="Select a page and section from above to edit..."></textarea>
+                                </div>
+                                
+                                <!-- Media Editor -->
+                                <div id="mediaEditorContainer" style="display: none;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                        <i class="fas fa-image"></i> Media Editor:
+                                    </label>
+                                    
+                                    <!-- Image Editor -->
+                                    <div id="imageEditor" style="display: none;">
+                                        <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 2px dashed #dee2e6;">
+                                            <div id="currentImagePreview" style="text-align: center; margin-bottom: 15px;">
+                                                <img id="currentImage" src="" alt="Current image" style="max-width: 100%; max-height: 300px; border-radius: 8px; display: none;">
+                                                <p id="noImageText" style="color: #999; margin: 20px 0;">No image currently set</p>
+                                            </div>
+                                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                                <label class="btn btn-primary" style="cursor: pointer; margin: 0;">
+                                                    <i class="fas fa-upload"></i> Upload New Image
+                                                    <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                                                </label>
+                                                <button class="btn btn-outline" onclick="removeImage()" id="removeImageBtn" style="display: none;">
+                                                    <i class="fas fa-trash"></i> Remove Image
+                                                </button>
+                                            </div>
+                                            <div id="imageUploadProgress" style="display: none; margin-top: 10px;">
+                                                <div style="background: #e9ecef; border-radius: 4px; height: 6px; overflow: hidden;">
+                                                    <div id="uploadProgressBar" style="background: #1a5490; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                                </div>
+                                                <small style="color: #666;">Uploading...</small>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 15px;">
+                                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Image URL (or paste URL):</label>
+                                            <input type="text" id="imageUrlInput" class="form-control" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px;">
+                                            <button class="btn btn-outline" onclick="useImageUrl()" style="margin-top: 10px;">
+                                                <i class="fas fa-link"></i> Use This URL
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Video Editor -->
+                                    <div id="videoEditor" style="display: none;">
+                                        <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Video URL (YouTube, Vimeo, or direct video link):</label>
+                                            <input type="text" id="videoUrlInput" class="form-control" placeholder="https://www.youtube.com/watch?v=..." style="width: 100%; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 10px;">
+                                            <div id="videoPreview" style="margin-top: 15px; display: none;">
+                                                <div style="background: #000; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                                                    <iframe id="videoPreviewFrame" width="100%" height="315" style="border-radius: 5px;" frameborder="0" allowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-outline" onclick="previewVideo()" style="margin-right: 10px;">
+                                                <i class="fas fa-eye"></i> Preview Video
+                                            </button>
+                                            <button class="btn btn-outline" onclick="clearVideo()">
+                                                <i class="fas fa-times"></i> Clear Video
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Gallery Editor -->
+                                    <div id="galleryEditor" style="display: none;">
+                                        <div style="margin-bottom: 15px;">
+                                            <label class="btn btn-primary" style="cursor: pointer; margin: 0;">
+                                                <i class="fas fa-upload"></i> Upload Multiple Images
+                                                <input type="file" id="galleryUpload" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(event)">
+                                            </label>
+                                        </div>
+                                        <div id="galleryImages" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+                                            <p style="color: #999; grid-column: 1/-1; text-align: center; padding: 20px;">No gallery images yet. Upload images to get started.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-preview" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; max-height: 600px; overflow-y: auto;">
+                                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #dee2e6;">
+                                    <h3 style="margin: 0 0 5px 0; color: #1a5490; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-eye"></i> Live Preview
+                                    </h3>
+                                    <small style="color: #6c757d;">See how your content appears on the website</small>
+                                </div>
+                                <div id="sectionPreview" style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); min-height: 200px;">
+                                    <div style="text-align: center; padding: 40px 20px; color: #6c757d;">
+                                        <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                                        <p style="margin: 0;">Select a section to see a preview</p>
+                                    </div>
+                                </div>
+                                <div id="sectionLocation" style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; display: none;">
+                                    <strong style="display: block; margin-bottom: 5px; color: #856404;">
+                                        <i class="fas fa-map-marker-alt"></i> Location on Website:
+                                    </strong>
+                                    <span id="locationText" style="color: #856404; font-size: 0.9rem;">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js?v=2.0"></script>
+</body>
+</html>
+

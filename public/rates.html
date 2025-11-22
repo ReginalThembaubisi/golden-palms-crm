@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rates & Pricing - Golden Palms Beach Resort</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏖️</text></svg>">
+</head>
+<body>
+    <!-- Navigation (same as index) -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <a href="index.html"><span class="logo-text">Golden Palms</span></a>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#accommodation">Accommodation</a></li>
+                    <li><a href="index.html#activities">Activities</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="rates.html">Rates</a></li>
+                    <li><a href="specials.html">Specials</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="index.html#book-now" class="btn-book">Book Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Rates Section -->
+    <section class="rates-section" style="margin-top: 70px; padding: 5rem 0;">
+        <div class="container">
+            <div class="section-header">
+                <h1>Rates & Pricing</h1>
+                <p id="rates-intro">Transparent pricing for your perfect beach holiday</p>
+            </div>
+
+            <div class="rates-info" id="rates-important-info" style="background: #f8f9fa; padding: 2rem; border-radius: 10px; margin-bottom: 3rem;">
+                <h3 style="margin-bottom: 1rem;">Important Information</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li><i class="fas fa-check" style="color: #d4af37; margin-right: 0.5rem;"></i> Rates are per unit per night</li>
+                    <li><i class="fas fa-check" style="color: #d4af37; margin-right: 0.5rem;"></i> Minimum stay: 2 nights (3 nights during peak season)</li>
+                    <li><i class="fas fa-check" style="color: #d4af37; margin-right: 0.5rem;"></i> All rates include VAT</li>
+                    <li><i class="fas fa-check" style="color: #d4af37; margin-right: 0.5rem;"></i> Linen and cutlery included</li>
+                    <li><i class="fas fa-check" style="color: #d4af37; margin-right: 0.5rem;"></i> Towels not included - please bring your own</li>
+                </ul>
+            </div>
+
+            <div class="rates-grid" id="rates-pricing-table" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- 2 Bedroom Rates -->
+                <div class="rate-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #1a5490; margin-bottom: 1rem;">2 Bedroom Units</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Maximum 6 guests</p>
+                    <div class="rate-table" style="margin-bottom: 1.5rem;">
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Low Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_2bed_low">R850/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Mid Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_2bed_mid">R1,050/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                            <span>Peak Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_2bed_peak">R1,350/night</strong>
+                        </div>
+                    </div>
+                    <a href="index.html#book-now?type=2_bedroom" class="btn btn-primary" style="width: 100%; text-align: center; display: block;">Book Now</a>
+                </div>
+
+                <!-- 3 Bedroom Rates -->
+                <div class="rate-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #1a5490; margin-bottom: 1rem;">3 Bedroom Units</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Maximum 8 guests</p>
+                    <div class="rate-table" style="margin-bottom: 1.5rem;">
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Low Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_3bed_low">R1,200/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Mid Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_3bed_mid">R1,500/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                            <span>Peak Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_3bed_peak">R1,900/night</strong>
+                        </div>
+                    </div>
+                    <a href="index.html#book-now?type=3_bedroom" class="btn btn-primary" style="width: 100%; text-align: center; display: block;">Book Now</a>
+                </div>
+
+                <!-- 5 Bedroom Rates -->
+                <div class="rate-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #1a5490; margin-bottom: 1rem;">5 Bedroom Units</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Maximum 10 guests</p>
+                    <div class="rate-table" style="margin-bottom: 1.5rem;">
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Low Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_5bed_low">R1,800/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e0e0e0;">
+                            <span>Mid Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_5bed_mid">R2,200/night</strong>
+                        </div>
+                        <div class="rate-row" style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                            <span>Peak Season</span>
+                            <strong style="color: #d4af37;" data-rate="rate_5bed_peak">R2,800/night</strong>
+                        </div>
+                    </div>
+                    <a href="index.html#book-now?type=5_bedroom" class="btn btn-primary" style="width: 100%; text-align: center; display: block;">Book Now</a>
+                </div>
+            </div>
+
+            <div class="season-info" id="rates-season-dates" style="margin-top: 3rem; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1.5rem;">Season Dates</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                    <div>
+                        <h4 style="color: #1a5490; margin-bottom: 0.5rem;">Low Season</h4>
+                        <p style="color: #666;">March - May, September - November</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #1a5490; margin-bottom: 0.5rem;">Mid Season</h4>
+                        <p style="color: #666;">June - August, December (first 2 weeks)</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #1a5490; margin-bottom: 0.5rem;">Peak Season</h4>
+                        <p style="color: #666;">December (last 2 weeks) - February</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (same as index) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Golden Palms Beach Resort</h4>
+                    <p>The Jewel of Inhambane, Mozambique.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +27 72 565 7091</li>
+                        <li><i class="fas fa-envelope"></i> info@goldenpalmsbeachresort.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Golden Palms Beach Resort. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Force reload pricing after page loads (in case of cache issues)
+        window.addEventListener('load', function() {
+            console.log('Page fully loaded, reloading pricing...');
+            setTimeout(loadPricing, 100);
+        });
+    </script>
+</body>
+</html>
+
