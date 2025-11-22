@@ -116,38 +116,86 @@ $app->get('/api', function (Request $request, Response $response) {
     try {
         Database::initialize();
         
-        // Check if tables exist, if not, initialize
+        // Check if tables exist, if not, initialize directly
         $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
         $tablesExist = false;
+        $initStatus = 'unknown';
         
         try {
             $tablesExist = $capsule->schema()->hasTable('users');
         } catch (\Exception $e) {
             // Connection might have failed
             error_log('Database check failed: ' . $e->getMessage());
+            throw $e;
         }
         
         if (!$tablesExist) {
-            // Run initialization script
-            $initScript = __DIR__ . '/database/init.php';
-            if (file_exists($initScript)) {
-                $output = [];
-                $returnVar = 0;
-                @exec("php $initScript 2>&1", $output, $returnVar);
-                
-                if ($returnVar === 0) {
-                    error_log('Database initialized successfully via /api endpoint');
-                } else {
-                    error_log('Database init failed: ' . implode("\n", $output));
+            // Initialize database directly (don't use exec - more reliable)
+            $initStatus = 'initializing';
+            error_log('Tables not found, initializing database...');
+            
+            try {
+                // Read and execute schema.sql directly
+                $schemaFile = __DIR__ . '/database/schema.sql';
+                if (!file_exists($schemaFile)) {
+                    throw new Exception("Schema file not found: $schemaFile");
                 }
+                
+                $sql = file_get_contents($schemaFile);
+                
+                // Remove comments
+                $sql = preg_replace('/--.*$/m', '', $sql);
+                $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+                
+                // Split into statements
+                $statements = array_filter(
+                    array_map('trim', explode(';', $sql)),
+                    function($stmt) {
+                        return !empty($stmt) && strlen(trim($stmt)) > 10;
+                    }
+                );
+                
+                $pdo = $capsule->connection()->getPdo();
+                $executed = 0;
+                
+                foreach ($statements as $statement) {
+                    $statement = trim($statement);
+                    if (empty($statement)) continue;
+                    
+                    try {
+                        $pdo->exec($statement);
+                        $executed++;
+                    } catch (\PDOException $e) {
+                        // Ignore "table already exists" errors
+                        if (strpos($e->getMessage(), 'already exists') === false && 
+                            strpos($e->getMessage(), 'Duplicate') === false) {
+                            error_log('SQL Error: ' . substr($e->getMessage(), 0, 200));
+                        }
+                    }
+                }
+                
+                error_log("Database initialization: $executed statements executed");
+                
+                // Verify tables were created
+                $tablesExist = $capsule->schema()->hasTable('users');
+                $initStatus = $tablesExist ? 'initialized' : 'failed';
+                
+            } catch (\Exception $e) {
+                error_log('Database initialization error: ' . $e->getMessage());
+                $initStatus = 'error: ' . $e->getMessage();
             }
+        } else {
+            $initStatus = 'already_initialized';
         }
         
         $response->getBody()->write(json_encode([
             'message' => 'Golden Palms CRM API',
             'version' => '1.0.0',
             'status' => 'running',
-            'database' => $tablesExist ? 'initialized' : 'initializing',
+            'database' => [
+                'tables_exist' => $tablesExist,
+                'initialization' => $initStatus
+            ],
             'endpoints' => [
                 'POST /api/auth/login' => 'User login',
                 'GET /api/leads' => 'List leads',
@@ -158,16 +206,18 @@ $app->get('/api', function (Request $request, Response $response) {
         ]));
     } catch (\PDOException $e) {
         // Database connection failed
+        error_log('Database connection error: ' . $e->getMessage());
         $response->getBody()->write(json_encode([
             'message' => 'Golden Palms CRM API',
             'version' => '1.0.0',
             'status' => 'database_connection_failed',
-            'error' => 'Database connection failed. Please check Railway logs.',
-            'hint' => 'Ensure MySQL service is running and MYSQL_URL is set.'
+            'error' => $e->getMessage(),
+            'hint' => 'Check Railway deploy logs. Ensure MySQL service is running and MYSQL_URL is set.'
         ]));
         return $response->withStatus(503)->withHeader('Content-Type', 'application/json');
     } catch (\Exception $e) {
         // Other errors
+        error_log('API endpoint error: ' . $e->getMessage());
         $response->getBody()->write(json_encode([
             'message' => 'Golden Palms CRM API',
             'version' => '1.0.0',
