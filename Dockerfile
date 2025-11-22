@@ -1,25 +1,26 @@
 # Railway PHP Dockerfile
-FROM php:8.1-apache
+FROM php:8.1-cli
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Copy composer files
+# Copy composer files first (for better caching)
 COPY composer.json composer.lock ./
 
 # Install dependencies
@@ -29,15 +30,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 COPY . .
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+RUN chmod -R 755 /app
 
-# Configure Apache
-RUN a2enmod rewrite
-COPY .htaccess .htaccess
-
-# Expose port (Railway provides $PORT)
-EXPOSE $PORT
+# Expose port (Railway will use $PORT environment variable)
+EXPOSE 8080
 
 # Start command (Railway provides $PORT via environment variable)
 CMD php -S 0.0.0.0:${PORT:-8080} -t . index.php
