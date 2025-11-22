@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: golden-palms-crm
+    env: php
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: php -S 0.0.0.0:$PORT -t . index.php
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: AUTO_INIT_DB
+        value: true
+    healthCheckPath: /api
+
+databases:
+  - name: goldenpalms-mysql
+    databaseName: goldenpalms_crm
+    user: goldenpalms_user
+    plan: free
+
