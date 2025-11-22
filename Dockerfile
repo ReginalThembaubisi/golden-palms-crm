@@ -40,5 +40,5 @@ RUN chmod -R 755 /app
 EXPOSE 8080
 
 # Start command (Railway provides $PORT via environment variable)
-# Use ENTRYPOINT with start.sh script which properly handles PORT variable
-ENTRYPOINT ["/start.sh"]
+# Use shell form to ensure PORT variable is expanded
+CMD ["/bin/sh", "/start.sh"]
