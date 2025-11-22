@@ -307,7 +307,8 @@ async function submitLead(formData) {
 **⚠️ IMPORTANT: Change these immediately after installation!**
 
 - Username: `admin`
-- Password: `admin123` (hashed in database)
+- Password: Set during database initialization (contact administrator for default)
+- **Security Note:** Default credentials should be changed immediately after first login
 
 To change the password, update it directly in the database or create a password reset feature.
 
