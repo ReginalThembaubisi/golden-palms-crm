@@ -101,7 +101,7 @@ If you prefer to set up manually or the auto-init doesn't work:
    INSERT INTO users (username, password_hash, email, role, created_at) 
    VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@goldenpalms.com', 'admin', NOW());
    ```
-   - Default password: `admin123` (change this!)
+   - Default password: Set during database initialization (contact administrator)
 
 ### Verify Auto-Init:
 After deployment, visit: `https://your-app.up.railway.app/api`
@@ -130,7 +130,8 @@ After deployment, visit: `https://your-app.up.railway.app/api`
    - Visit: `https://your-app-name.up.railway.app/admin`
    - Login with:
      - Username: `admin`
-     - Password: `admin123`
+     - Password: Check database or contact administrator
+     - **⚠️ Change password immediately after first login!**
 
 3. **Test API**
    - Visit: `https://your-app-name.up.railway.app/api`

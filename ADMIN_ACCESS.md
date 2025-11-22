@@ -21,7 +21,8 @@
 2. **You should see:** A login screen with purple gradient background
 3. **Default Login:**
    - Username: `admin`
-   - Password: `admin123`
+   - Password: Contact system administrator or check database setup
+   - **⚠️ IMPORTANT:** Change default password immediately after first login!
 
 ## If You See the Customer Website Instead
 

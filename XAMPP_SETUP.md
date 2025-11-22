@@ -122,7 +122,7 @@ You can test the connection by:
 
 After importing, you can login with:
 - **Username:** `admin`
-- **Password:** `admin123`
+- **Password:** Set during database initialization (check database/schema.sql)
 
 **⚠️ IMPORTANT:** Change this password immediately after first login!
 

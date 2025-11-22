@@ -54,13 +54,13 @@ APP_DEBUG=false
 
 ### 4. Database Setup
 - [ ] Import `database/schema.sql` into Railway MySQL
-- [ ] Verify admin user exists (username: `admin`, password: `admin123`)
+- [ ] Verify admin user exists (username: `admin`, password: check database)
 - [ ] Change admin password after first login!
 
 ### 5. Test After Deployment
 - [ ] Visit customer website: `https://your-app.up.railway.app`
 - [ ] Visit admin dashboard: `https://your-app.up.railway.app/admin`
-- [ ] Test login (admin/admin123)
+- [ ] Test login (check database for default password)
 - [ ] Test API: `https://your-app.up.railway.app/api`
 - [ ] Test lead submission from website
 - [ ] Test booking conversion in admin

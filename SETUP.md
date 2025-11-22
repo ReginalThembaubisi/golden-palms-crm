@@ -175,7 +175,7 @@ $errorMiddleware = $app->addErrorMiddleware(false, true, true);
 # Get token
 TOKEN=$(curl -s -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}' | jq -r '.token')
+  -d '{"username":"admin","password":"YOUR_PASSWORD"}' | jq -r '.token')
 
 # Use token
 curl -X GET http://localhost:8000/api/leads \
