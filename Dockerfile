@@ -26,10 +26,6 @@ COPY composer.json composer.lock ./
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy startup script
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
 # Copy application files
 COPY . .
 
