@@ -28,6 +28,7 @@ $app->add(function (Request $request, $handler) {
     // Only initialize DB for API routes
     if (strpos($uri, '/api/') === 0 || $uri === '/api') {
         try {
+            // Try to initialize database
             Database::initialize();
             
             // Auto-initialize database schema on first API call (Railway deployment)
@@ -36,6 +37,9 @@ $app->add(function (Request $request, $handler) {
             if (!$dbInitialized && ($_ENV['AUTO_INIT_DB'] ?? 'true') === 'true') {
                 try {
                     $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
+                    // Test connection first
+                    $capsule->connection()->getPdo();
+                    
                     if (!$capsule->schema()->hasTable('users')) {
                         // Database not initialized, run init script
                         $initScript = __DIR__ . '/database/init.php';
@@ -46,14 +50,41 @@ $app->add(function (Request $request, $handler) {
                             @exec("php $initScript 2>&1", $output, $returnVar);
                             if ($returnVar === 0) {
                                 error_log('Database auto-initialized successfully');
+                            } else {
+                                error_log('Database init script returned: ' . implode("\n", $output));
                             }
                         }
                     }
                     $dbInitialized = true;
+                } catch (\PDOException $e) {
+                    // Database connection failed - log but don't crash
+                    error_log('Database connection failed: ' . $e->getMessage());
+                    // Return a helpful error response instead of crashing
+                    if ($uri === '/api') {
+                        $response = new \Slim\Psr7\Response();
+                        $response->getBody()->write(json_encode([
+                            'message' => 'Database connection failed',
+                            'error' => 'Please check Railway deploy logs and ensure MySQL service is running',
+                            'hint' => 'Make sure MYSQL_URL environment variable is set'
+                        ]));
+                        return $response->withStatus(503)->withHeader('Content-Type', 'application/json');
+                    }
                 } catch (\Exception $e) {
-                    // Silently fail - might be first run or database not ready
-                    error_log('Database auto-init skipped: ' . $e->getMessage());
+                    // Other errors - log but don't crash
+                    error_log('Database auto-init error: ' . $e->getMessage());
                 }
+            }
+        } catch (\PDOException $e) {
+            // Database connection failed - return error instead of crashing
+            error_log('Database initialization failed: ' . $e->getMessage());
+            if ($uri === '/api') {
+                $response = new \Slim\Psr7\Response();
+                $response->getBody()->write(json_encode([
+                    'message' => 'Database connection failed',
+                    'error' => $e->getMessage(),
+                    'hint' => 'Check Railway deploy logs. Ensure MySQL service is added and MYSQL_URL is set.'
+                ]));
+                return $response->withStatus(503)->withHeader('Content-Type', 'application/json');
             }
         } catch (\Exception $e) {
             // Log but don't fail - database might not be ready yet

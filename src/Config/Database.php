@@ -42,10 +42,22 @@ class Database
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
+            'options' => [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_EMULATE_PREPARES => false,
+            ],
         ]);
 
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
+        
+        // Test connection immediately to catch errors early
+        try {
+            $capsule->connection()->getPdo();
+        } catch (\PDOException $e) {
+            throw new \RuntimeException('Failed to connect to database: ' . $e->getMessage(), 0, $e);
+        }
     }
 }
 
