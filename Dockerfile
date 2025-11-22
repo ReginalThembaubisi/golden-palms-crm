@@ -26,10 +26,6 @@ COPY composer.json composer.lock ./
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy startup script first
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
 # Copy application files
 COPY . .
 
@@ -40,5 +36,5 @@ RUN chmod -R 755 /app
 EXPOSE 8080
 
 # Start command (Railway provides $PORT via environment variable)
-# Use shell form to ensure PORT variable is expanded
-CMD ["/bin/sh", "/start.sh"]
+# Use shell form CMD to ensure PORT variable is expanded at runtime
+CMD /bin/sh -c "PORT=\${PORT:-8080} && exec php -S 0.0.0.0:\$PORT -t . index.php"
