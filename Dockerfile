@@ -35,6 +35,9 @@ RUN chmod -R 755 /app
 # Expose port (Railway will use $PORT environment variable)
 EXPOSE 8080
 
+# Create startup script to handle PORT variable
+RUN echo '#!/bin/sh\nphp -S 0.0.0.0:${PORT:-8080} -t . index.php' > /start.sh && chmod +x /start.sh
+
 # Start command (Railway provides $PORT via environment variable)
-CMD php -S 0.0.0.0:${PORT:-8080} -t . index.php
+CMD ["/start.sh"]
 
