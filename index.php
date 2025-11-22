@@ -110,20 +110,73 @@ $app->addBodyParsingMiddleware();
 $routes = require __DIR__ . '/routes/api.php';
 $routes($app);
 
-// API info route
+// API info route - also triggers database initialization
 $app->get('/api', function (Request $request, Response $response) {
-    $response->getBody()->write(json_encode([
-        'message' => 'Golden Palms CRM API',
-        'version' => '1.0.0',
-        'status' => 'running',
-        'endpoints' => [
-            'POST /api/auth/login' => 'User login',
-            'GET /api/leads' => 'List leads',
-            'POST /api/leads/website' => 'Submit website lead',
-            'GET /api/bookings' => 'List bookings',
-            'GET /api/bookings/availability' => 'Check availability'
-        ]
-    ]));
+    // Try to initialize database and create tables if needed
+    try {
+        Database::initialize();
+        
+        // Check if tables exist, if not, initialize
+        $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
+        $tablesExist = false;
+        
+        try {
+            $tablesExist = $capsule->schema()->hasTable('users');
+        } catch (\Exception $e) {
+            // Connection might have failed
+            error_log('Database check failed: ' . $e->getMessage());
+        }
+        
+        if (!$tablesExist) {
+            // Run initialization script
+            $initScript = __DIR__ . '/database/init.php';
+            if (file_exists($initScript)) {
+                $output = [];
+                $returnVar = 0;
+                @exec("php $initScript 2>&1", $output, $returnVar);
+                
+                if ($returnVar === 0) {
+                    error_log('Database initialized successfully via /api endpoint');
+                } else {
+                    error_log('Database init failed: ' . implode("\n", $output));
+                }
+            }
+        }
+        
+        $response->getBody()->write(json_encode([
+            'message' => 'Golden Palms CRM API',
+            'version' => '1.0.0',
+            'status' => 'running',
+            'database' => $tablesExist ? 'initialized' : 'initializing',
+            'endpoints' => [
+                'POST /api/auth/login' => 'User login',
+                'GET /api/leads' => 'List leads',
+                'POST /api/leads/website' => 'Submit website lead',
+                'GET /api/bookings' => 'List bookings',
+                'GET /api/bookings/availability' => 'Check availability'
+            ]
+        ]));
+    } catch (\PDOException $e) {
+        // Database connection failed
+        $response->getBody()->write(json_encode([
+            'message' => 'Golden Palms CRM API',
+            'version' => '1.0.0',
+            'status' => 'database_connection_failed',
+            'error' => 'Database connection failed. Please check Railway logs.',
+            'hint' => 'Ensure MySQL service is running and MYSQL_URL is set.'
+        ]));
+        return $response->withStatus(503)->withHeader('Content-Type', 'application/json');
+    } catch (\Exception $e) {
+        // Other errors
+        $response->getBody()->write(json_encode([
+            'message' => 'Golden Palms CRM API',
+            'version' => '1.0.0',
+            'status' => 'error',
+            'error' => $e->getMessage()
+        ]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    }
+    
     return $response->withHeader('Content-Type', 'application/json');
 });
 
