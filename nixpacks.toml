@@ -4,6 +4,9 @@ nixPkgs = ["php81", "composer"]
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader"]
 
+[phases.build]
+cmds = ["php database/init.php || true"]
+
 [start]
 cmd = "php -S 0.0.0.0:$PORT -t . index.php"
 

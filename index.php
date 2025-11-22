@@ -27,7 +27,38 @@ $app->add(function (Request $request, $handler) {
     $uri = $request->getUri()->getPath();
     // Only initialize DB for API routes
     if (strpos($uri, '/api/') === 0 || $uri === '/api') {
-        Database::initialize();
+        try {
+            Database::initialize();
+            
+            // Auto-initialize database schema on first API call (Railway deployment)
+            // Only runs once if tables don't exist
+            static $dbInitialized = false;
+            if (!$dbInitialized && ($_ENV['AUTO_INIT_DB'] ?? 'true') === 'true') {
+                try {
+                    $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
+                    if (!$capsule->schema()->hasTable('users')) {
+                        // Database not initialized, run init script
+                        $initScript = __DIR__ . '/database/init.php';
+                        if (file_exists($initScript)) {
+                            // Run init script (non-blocking)
+                            $output = [];
+                            $returnVar = 0;
+                            @exec("php $initScript 2>&1", $output, $returnVar);
+                            if ($returnVar === 0) {
+                                error_log('Database auto-initialized successfully');
+                            }
+                        }
+                    }
+                    $dbInitialized = true;
+                } catch (\Exception $e) {
+                    // Silently fail - might be first run or database not ready
+                    error_log('Database auto-init skipped: ' . $e->getMessage());
+                }
+            }
+        } catch (\Exception $e) {
+            // Log but don't fail - database might not be ready yet
+            error_log('Database initialization warning: ' . $e->getMessage());
+        }
     }
     return $handler->handle($request);
 });

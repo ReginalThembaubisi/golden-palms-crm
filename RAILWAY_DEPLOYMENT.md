@@ -68,7 +68,18 @@ EMAIL_FROM_NAME=Golden Palms Beach Resort
    - Use a random 32-character string
    - You can generate one: https://randomkeygen.com/
 
-## Step 3: Set Up Database
+## Step 3: Database Setup (AUTOMATIC! 🎉)
+
+**Good news!** The database schema will be created automatically on first deployment!
+
+### How It Works:
+- The app includes an auto-initialization script (`database/init.php`)
+- On first API call, it checks if tables exist
+- If not, it automatically creates all tables from `database/schema.sql`
+- No manual setup needed!
+
+### Manual Setup (Optional):
+If you prefer to set up manually or the auto-init doesn't work:
 
 1. **Get Database Connection**
    - In Railway, go to your MySQL service
@@ -91,6 +102,12 @@ EMAIL_FROM_NAME=Golden Palms Beach Resort
    VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@goldenpalms.com', 'admin', NOW());
    ```
    - Default password: `admin123` (change this!)
+
+### Verify Auto-Init:
+After deployment, visit: `https://your-app.up.railway.app/api`
+- First visit will trigger database initialization
+- Subsequent visits will use existing tables
+- Check Railway logs to see initialization messages
 
 ## Step 4: Deploy
 
