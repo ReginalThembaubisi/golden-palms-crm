@@ -99,7 +99,7 @@ Configure your web server to point to the project directory.
 ```bash
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
+  -d '{"username":"admin","password":"YOUR_PASSWORD"}'
 ```
 
 Expected response:
