@@ -127,7 +127,15 @@ function checkURLParams() {
 // Load contact information from API
 async function loadContactInfo() {
     try {
-        const response = await fetch(`${API_BASE_URL}/website/content?page=homepage`);
+        // Add timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
+        const response = await fetch(`${API_BASE_URL}/website/content?page=homepage`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
             const content = await response.json();
             
@@ -174,14 +182,26 @@ async function loadContactInfo() {
             }
         }
     } catch (error) {
-        console.error('Error loading contact info:', error);
+        if (error.name === 'AbortError') {
+            console.warn('Contact info request timed out');
+        } else {
+            console.error('Error loading contact info:', error);
+        }
+        // Continue without contact info - page should still work
     }
 }
 
 async function loadPricing() {
     try {
+        // Add timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
         // Load rates page content from API
-        const response = await fetch(`${API_BASE_URL}/website/content?page=rates`);
+        const response = await fetch(`${API_BASE_URL}/website/content?page=rates`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         
         if (response.ok) {
             const content = await response.json();
@@ -232,11 +252,15 @@ async function loadPricing() {
             }
         } else {
             // Fallback to defaults if API fails
-            console.error('Could not load pricing from API, status:', response.status);
+            console.warn('Could not load pricing from API, status:', response.status);
         }
     } catch (error) {
-        console.error('Error loading pricing:', error);
-        // Fallback to defaults
+        if (error.name === 'AbortError') {
+            console.warn('Pricing request timed out - using default prices');
+        } else {
+            console.error('Error loading pricing:', error);
+        }
+        // Fallback to defaults - page should still work
     }
 }
 
@@ -275,12 +299,18 @@ function initQuickBooking() {
             };
 
             try {
-                // Check availability via API
+                // Check availability via API with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
                 const response = await fetch(`${API_BASE_URL}/bookings/availability?` + new URLSearchParams({
                     check_in: data.check_in,
                     check_out: data.check_out,
                     unit_type: data.unit_type || ''
-                }));
+                }), {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
 
                 if (response.ok) {
                     const result = await response.json();
@@ -305,7 +335,11 @@ function initQuickBooking() {
                     window.location.href = `#book-now?${params.toString()}`;
                 }
             } catch (error) {
-                console.error('Error checking availability:', error);
+                if (error.name === 'AbortError') {
+                    console.warn('Availability check timed out - redirecting to booking form');
+                } else {
+                    console.error('Error checking availability:', error);
+                }
                 // Fallback: redirect to booking form
                 const params = new URLSearchParams({
                     check_in: data.check_in,
@@ -376,14 +410,19 @@ function initBookingForm() {
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
             try {
-                // Submit to CRM API
+                // Submit to CRM API with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+                
                 const response = await fetch(`${API_BASE_URL}/leads/website`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
 
                 const result = await response.json();
 
@@ -408,7 +447,11 @@ function initBookingForm() {
                     }, 100);
                 }
             } catch (error) {
-                console.error('Error submitting form:', error);
+                if (error.name === 'AbortError') {
+                    console.warn('Form submission timed out - showing fallback message');
+                } else {
+                    console.error('Error submitting form:', error);
+                }
                 // Fallback: show success message anyway (form might work via email)
                 formMessage.className = 'form-message success';
                 formMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! Your enquiry has been received. If you don\'t hear from us within 24 hours, please call us at +27 72 565 7091.';
