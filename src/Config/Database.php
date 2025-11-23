@@ -25,6 +25,12 @@ class Database
             $username = $parsed['user'] ?? 'root';
             $password = $parsed['pass'] ?? '';
             
+            // Ensure we use TCP/IP, not socket (fix for Railway)
+            if ($host === 'localhost' || $host === '127.0.0.1') {
+                // For Railway, localhost should use 127.0.0.1 with explicit port
+                $host = '127.0.0.1';
+            }
+            
             // Log for debugging (without sensitive info)
             error_log("Database connection: mysql://{$username}@{$host}:{$port}/{$database}");
         } else {
@@ -50,7 +56,11 @@ class Database
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                 \PDO::ATTR_EMULATE_PREPARES => false,
+                // Force TCP/IP connection instead of socket
+                \PDO::ATTR_PERSISTENT => false,
             ],
+            // Force TCP connection - prevent socket file errors
+            'unix_socket' => null,
         ]);
 
         $capsule->setAsGlobal();
