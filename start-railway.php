@@ -22,11 +22,11 @@ error_log("Starting PHP server on $host:$port");
 error_log("Document root: $root");
 error_log("Router: $router");
 
-// Build command
-$command = sprintf('php -S %s:%d -t %s %s', $host, $port, $root, $router);
+// Use exec with proper handling for long-running process
+$command = sprintf('php -S %s:%d -t %s %s', escapeshellarg($host), $port, escapeshellarg($root), escapeshellarg($router));
 
 error_log("Executing: $command");
 
-// Execute the command
-passthru($command);
+// Execute and keep running
+exec($command);
 

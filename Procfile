@@ -1,2 +1,2 @@
-web: php start-railway.php
+web: php -S 0.0.0.0:$PORT -t . index.php
 
