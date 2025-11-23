@@ -117,8 +117,8 @@ $app->get('/api', function (Request $request, Response $response) {
         Database::initialize();
         
         // Check if tables exist, if not, initialize directly
-        $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
-        $tablesExist = false;
+        // Use static methods after Database::initialize() calls setAsGlobal()
+        $tablesExist = \Illuminate\Database\Capsule\Manager::schema()->hasTable('users');
         $initStatus = 'unknown';
         
         try {

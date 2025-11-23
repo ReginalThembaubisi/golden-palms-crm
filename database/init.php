@@ -33,11 +33,35 @@ function initDatabase() {
         $password = $parsed['pass'] ?? '';
     } else {
         // Use individual environment variables
-        $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
-        $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? 3306;
-        $database = $_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? 'goldenpalms_crm';
-        $username = $_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? 'root';
-        $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
+        // Railway uses MYSQLHOST (no underscore), also check MYSQL_HOST (with underscore)
+        $host = '';
+        $port = '';
+        $database = '';
+        $username = '';
+        $password = '';
+        
+        // Helper to get env var from all sources
+        $getEnvVar = function($names) {
+            foreach ($names as $name) {
+                if (isset($_ENV[$name]) && !empty($_ENV[$name])) {
+                    return trim($_ENV[$name]);
+                }
+                if (isset($_SERVER[$name]) && !empty($_SERVER[$name])) {
+                    return trim($_SERVER[$name]);
+                }
+                $value = getenv($name);
+                if ($value !== false && !empty($value)) {
+                    return trim($value);
+                }
+            }
+            return '';
+        };
+        
+        $host = $getEnvVar(['DB_HOST', 'MYSQL_HOST', 'MYSQLHOST']) ?: 'localhost';
+        $port = $getEnvVar(['DB_PORT', 'MYSQL_PORT', 'MYSQLPORT']) ?: '3306';
+        $database = $getEnvVar(['DB_DATABASE', 'MYSQL_DATABASE']) ?: 'goldenpalms_crm';
+        $username = $getEnvVar(['DB_USERNAME', 'MYSQL_USER', 'MYSQLUSER']) ?: 'root';
+        $password = $getEnvVar(['DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQLPASSWORD']) ?: '';
     }
 
     $capsule->addConnection([
