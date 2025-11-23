@@ -360,22 +360,22 @@
             </div>
             <div class="gallery-grid" id="galleryGrid">
                 <div class="gallery-item">
-                    <img src="images/gallery-1.jpg" alt="Beach view" onerror="this.src='https://via.placeholder.com/400x300?text=Beach+View'">
+                    <img src="images/gallery-1.jpg" alt="Beach view" onerror="handleImageError(this, 'Beach View')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-2.jpg" alt="Accommodation" onerror="this.src='https://via.placeholder.com/400x300?text=Accommodation'">
+                    <img src="images/gallery-2.jpg" alt="Accommodation" onerror="handleImageError(this, 'Accommodation')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-3.jpg" alt="Activities" onerror="this.src='https://via.placeholder.com/400x300?text=Activities'">
+                    <img src="images/gallery-3.jpg" alt="Activities" onerror="handleImageError(this, 'Activities')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-4.jpg" alt="Sunset" onerror="this.src='https://via.placeholder.com/400x300?text=Sunset'">
+                    <img src="images/gallery-4.jpg" alt="Sunset" onerror="handleImageError(this, 'Sunset')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-5.jpg" alt="Diving" onerror="this.src='https://via.placeholder.com/400x300?text=Diving'">
+                    <img src="images/gallery-5.jpg" alt="Diving" onerror="handleImageError(this, 'Diving')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-6.jpg" alt="Fishing" onerror="this.src='https://via.placeholder.com/400x300?text=Fishing'">
+                    <img src="images/gallery-6.jpg" alt="Fishing" onerror="handleImageError(this, 'Fishing')">
                 </div>
             </div>
         </div>
@@ -610,6 +610,15 @@
     
     <!-- Performance monitoring (optional) -->
     <script>
+        // Handle gallery image errors
+        function handleImageError(img, label) {
+            img.onerror = null; // Prevent infinite loop
+            img.style.display = 'none';
+            const parent = img.parentElement;
+            parent.classList.add('gallery-placeholder');
+            parent.innerHTML = '<div class="gallery-placeholder-content"><i class="fas fa-image"></i><span>' + label + '</span></div>';
+        }
+        
         // Log page load time
         window.addEventListener('load', function() {
             if (window.performance && window.performance.timing) {

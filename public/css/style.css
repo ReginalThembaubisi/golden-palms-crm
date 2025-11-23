@@ -895,6 +895,32 @@ section {
     transform: scale(1.15);
 }
 
+.gallery-placeholder {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4a7fb8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-placeholder-content {
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+.gallery-placeholder-content i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.gallery-placeholder-content span {
+    font-size: 1rem;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
 /* Booking Section */
 .booking-section {
     background: var(--bg-light);
