@@ -2,7 +2,7 @@
 nixPkgs = ["php81", "php81Packages.composer"]
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader"]
+cmds = ["composer install --no-dev --optimize-autoloader", "chmod +x railway-start.sh"]
 
 [start]
 cmd = "./railway-start.sh"
