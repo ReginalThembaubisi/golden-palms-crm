@@ -42,15 +42,20 @@ class Database
             $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
         }
 
-        // Build DSN string to force TCP/IP connection (prevents socket file errors)
-        // Use IP address format to ensure TCP/IP, not socket
-        $dsnHost = ($host === 'localhost' || $host === '127.0.0.1') ? '127.0.0.1' : $host;
-        $dsn = "mysql:host={$dsnHost};port={$port};dbname={$database};charset=utf8mb4";
+        // Force TCP/IP connection - prevent socket file errors on Railway
+        // Convert localhost to 127.0.0.1 to ensure TCP/IP is used
+        $tcpHost = ($host === 'localhost') ? '127.0.0.1' : $host;
+        
+        // Ensure port is explicitly set (required for TCP/IP)
+        $tcpPort = (int)$port;
+        if ($tcpPort <= 0) {
+            $tcpPort = 3306;
+        }
         
         $capsule->addConnection([
             'driver' => 'mysql',
-            'host' => $dsnHost,
-            'port' => $port,
+            'host' => $tcpHost,
+            'port' => $tcpPort,
             'database' => $database,
             'username' => $username,
             'password' => $password,
@@ -63,8 +68,6 @@ class Database
                 \PDO::ATTR_EMULATE_PREPARES => false,
                 \PDO::ATTR_PERSISTENT => false,
             ],
-            // Explicitly set DSN to force TCP/IP
-            'dsn' => $dsn,
         ]);
 
         $capsule->setAsGlobal();
