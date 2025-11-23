@@ -36,7 +36,7 @@ $app->add(function (Request $request, $handler) {
             static $dbInitialized = false;
             if (!$dbInitialized && ($_ENV['AUTO_INIT_DB'] ?? 'true') === 'true') {
                 try {
-                    $capsule = \Illuminate\Database\Capsule\Manager::getInstance();
+                    $capsule = \Illuminate\Database\Capsule\Manager::getInstance() ?? new \Illuminate\Database\Capsule\Manager();
                     // Test connection first
                     $capsule->connection()->getPdo();
                     
