@@ -36,8 +36,8 @@ RUN chmod -R 755 /app
 EXPOSE 8080
 
 # Make start script executable
-RUN chmod +x start.sh
+RUN chmod +x railway-start.sh
 
 # Start command (Railway provides $PORT via environment variable)
 # Note: Railway will use Procfile if present, otherwise this CMD will be used
-CMD ["./start.sh"]
+CMD ["./railway-start.sh"]
