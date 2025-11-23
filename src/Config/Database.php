@@ -71,11 +71,12 @@ class Database
                 return '';
             };
             
-            $host = $getEnvVar(['DB_HOST', 'MYSQL_HOST']);
-            $port = $getEnvVar(['DB_PORT', 'MYSQL_PORT']);
+            // Railway uses MYSQLHOST (no underscore), also check MYSQL_HOST (with underscore)
+            $host = $getEnvVar(['DB_HOST', 'MYSQL_HOST', 'MYSQLHOST']);
+            $port = $getEnvVar(['DB_PORT', 'MYSQL_PORT', 'MYSQLPORT']);
             $database = $getEnvVar(['DB_DATABASE', 'MYSQL_DATABASE']);
-            $username = $getEnvVar(['DB_USERNAME', 'MYSQL_USER']);
-            $password = $getEnvVar(['DB_PASSWORD', 'MYSQL_PASSWORD']);
+            $username = $getEnvVar(['DB_USERNAME', 'MYSQL_USER', 'MYSQLUSER']);
+            $password = $getEnvVar(['DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQLPASSWORD']);
             
             // Debug: Log what we found
             error_log("Checking environment variables:");
