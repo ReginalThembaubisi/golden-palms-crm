@@ -27,8 +27,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <img src="images/logo.png" alt="Golden Palms Beach Resort" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <span class="logo-text" style="display:none;">Golden Palms</span>
+                    <img src="images/logo.png" alt="Golden Palms Beach Resort" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <span class="logo-text" style="display:none; font-size: 1.5rem; font-weight: 700; color: #d4af37;">Golden Palms</span>
                 </div>
                 <button class="mobile-menu-toggle" id="mobileMenuToggle">
                     <i class="fas fa-bars"></i>
@@ -619,11 +619,45 @@
             parent.innerHTML = '<div class="gallery-placeholder-content"><i class="fas fa-image"></i><span>' + label + '</span></div>';
         }
         
-        // Log page load time
+        // Check if background images loaded successfully
+        function checkBackgroundImages() {
+            const cardImages = document.querySelectorAll('.card-image[style*="background-image"]');
+            cardImages.forEach(card => {
+                const bgImage = card.style.backgroundImage;
+                if (bgImage && bgImage !== 'none') {
+                    const urlMatch = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/);
+                    if (urlMatch) {
+                        const imgUrl = urlMatch[1];
+                        const img = new Image();
+                        img.onerror = function() {
+                            // Background image failed to load, show placeholder
+                            card.style.backgroundImage = 'none';
+                            if (!card.classList.contains('card-image-placeholder')) {
+                                card.classList.add('card-image-placeholder');
+                                const label = card.closest('.accommodation-card')?.querySelector('h3')?.textContent || 'Accommodation';
+                                card.innerHTML = '<div class="card-placeholder-content"><i class="fas fa-home"></i><span>' + label + '</span></div>' + card.innerHTML;
+                            }
+                        };
+                        img.src = imgUrl;
+                    }
+                }
+            });
+        }
+        
+        // Run after page loads
         window.addEventListener('load', function() {
+            // Check background images
+            setTimeout(checkBackgroundImages, 100);
+            
+            // Log page load time (fixed calculation)
             if (window.performance && window.performance.timing) {
-                const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
-                console.log('Page load time: ' + loadTime + 'ms');
+                const timing = window.performance.timing;
+                if (timing.loadEventEnd > 0 && timing.navigationStart > 0) {
+                    const loadTime = timing.loadEventEnd - timing.navigationStart;
+                    if (loadTime > 0) {
+                        console.log('Page load time: ' + loadTime + 'ms');
+                    }
+                }
             }
         });
     </script>

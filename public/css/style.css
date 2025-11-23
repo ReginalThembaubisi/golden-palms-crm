@@ -1141,7 +1141,8 @@ section {
 /* Hero Location - Duplicate removed, using definition above */
 
 /* Card Image Placeholder */
-.card-image[style*="background-color"] {
+.card-image[style*="background-color"],
+.card-image-placeholder {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #d4af37 100%) !important;
     display: flex;
     align-items: center;
@@ -1150,7 +1151,12 @@ section {
     overflow: hidden;
 }
 
-.card-image[style*="background-color"]::before {
+.card-image-placeholder {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #d4af37 100%) !important;
+}
+
+.card-image[style*="background-color"]::before,
+.card-image-placeholder::before {
     content: '🏖️';
     font-size: 5rem;
     opacity: 0.2;
@@ -1158,12 +1164,39 @@ section {
     animation: float 3s ease-in-out infinite;
 }
 
-.card-image[style*="background-color"]::after {
+.card-image[style*="background-color"]::after,
+.card-image-placeholder::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
     animation: shine 3s infinite;
+}
+
+.card-placeholder-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    color: white;
+    z-index: 3;
+}
+
+.card-placeholder-content i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.card-placeholder-content span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    display: block;
 }
 
 @keyframes float {
