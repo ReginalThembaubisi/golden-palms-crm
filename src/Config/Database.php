@@ -13,7 +13,8 @@ class Database
         $capsule = new Capsule;
 
         // Support Railway MySQL and Render PostgreSQL connection string formats
-        $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? null;
+        // Railway automatically sets MYSQL_URL when MySQL service is added
+        $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? getenv('MYSQL_URL') ?? getenv('DATABASE_URL') ?? null;
         
         if ($mysqlUrl) {
             // Parse MySQL URL: mysql://user:password@host:port/database
@@ -23,6 +24,9 @@ class Database
             $database = ltrim($parsed['path'] ?? '/goldenpalms_crm', '/');
             $username = $parsed['user'] ?? 'root';
             $password = $parsed['pass'] ?? '';
+            
+            // Log for debugging (without sensitive info)
+            error_log("Database connection: mysql://{$username}@{$host}:{$port}/{$database}");
         } else {
             // Use individual environment variables
             $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
