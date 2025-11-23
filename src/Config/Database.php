@@ -48,18 +48,34 @@ class Database
             error_log("MYSQL_URL parsed - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
         } else {
             // Use individual environment variables
-            $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?? getenv('MYSQL_HOST') ?? 'localhost';
-            $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?? getenv('MYSQL_PORT') ?? 3306;
-            $database = $_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?? getenv('MYSQL_DATABASE') ?? 'goldenpalms_crm';
-            $username = $_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?? getenv('MYSQL_USER') ?? 'root';
-            $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?? getenv('MYSQL_PASSWORD') ?? '';
+            $host = trim($_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?? getenv('MYSQL_HOST') ?? '');
+            $port = trim($_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?? getenv('MYSQL_PORT') ?? '');
+            $database = trim($_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?? getenv('MYSQL_DATABASE') ?? '');
+            $username = trim($_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?? getenv('MYSQL_USER') ?? '');
+            $password = trim($_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?? getenv('MYSQL_PASSWORD') ?? '');
+            
+            // Validate required values
+            if (empty($host)) {
+                error_log("ERROR: DB_HOST is empty! Please set DB_HOST in Railway web service variables.");
+                throw new \RuntimeException('DB_HOST environment variable is not set. Please configure database connection in Railway.');
+            }
+            
+            if (empty($port)) {
+                $port = '3306';
+                error_log("WARNING: DB_PORT not set, using default 3306");
+            }
+            
+            if (empty($database)) {
+                error_log("ERROR: DB_DATABASE is empty! Please set DB_DATABASE in Railway web service variables.");
+                throw new \RuntimeException('DB_DATABASE environment variable is not set. Please configure database connection in Railway.');
+            }
             
             // Log for debugging
             error_log("Using individual DB variables - host: {$host}, port: {$port}, database: {$database}");
             
             // Warn if using localhost (won't work on Railway)
             if ($host === 'localhost') {
-                error_log("WARNING: Using localhost as DB_HOST - this won't work on Railway! Set DB_HOST to Railway MySQL hostname or ensure MYSQL_URL is set.");
+                error_log("WARNING: Using localhost as DB_HOST - this won't work on Railway! Set DB_HOST to Railway MySQL hostname.");
             }
         }
 
