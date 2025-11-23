@@ -118,11 +118,11 @@ $app->get('/api', function (Request $request, Response $response) {
         
         // Check if tables exist, if not, initialize directly
         // Use static methods after Database::initialize() calls setAsGlobal()
-        $tablesExist = \Illuminate\Database\Capsule\Manager::schema()->hasTable('users');
+        $tablesExist = false;
         $initStatus = 'unknown';
         
         try {
-            $tablesExist = $capsule->schema()->hasTable('users');
+            $tablesExist = \Illuminate\Database\Capsule\Manager::schema()->hasTable('users');
         } catch (\Exception $e) {
             // Connection might have failed
             error_log('Database check failed: ' . $e->getMessage());
@@ -155,7 +155,7 @@ $app->get('/api', function (Request $request, Response $response) {
                     }
                 );
                 
-                $pdo = $capsule->connection()->getPdo();
+                $pdo = \Illuminate\Database\Capsule\Manager::connection()->getPdo();
                 $executed = 0;
                 
                 foreach ($statements as $statement) {
@@ -177,7 +177,7 @@ $app->get('/api', function (Request $request, Response $response) {
                 error_log("Database initialization: $executed statements executed");
                 
                 // Verify tables were created
-                $tablesExist = $capsule->schema()->hasTable('users');
+                $tablesExist = \Illuminate\Database\Capsule\Manager::schema()->hasTable('users');
                 $initStatus = $tablesExist ? 'initialized' : 'failed';
                 
             } catch (\Exception $e) {
