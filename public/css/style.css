@@ -204,6 +204,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-bottom: 200px; /* Space for hero-features at bottom */
 }
 
 .hero-slide.active {
@@ -1113,14 +1114,7 @@ section {
     box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
-/* Hero Location */
-.hero-location {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
+/* Hero Location - Duplicate removed, using definition above */
 
 /* Card Image Placeholder */
 .card-image[style*="background-color"] {
