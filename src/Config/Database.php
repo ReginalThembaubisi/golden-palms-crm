@@ -14,7 +14,19 @@ class Database
 
         // Support Railway MySQL and Render PostgreSQL connection string formats
         // Railway automatically sets MYSQL_URL when MySQL service is added
-        $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? getenv('MYSQL_URL') ?? getenv('DATABASE_URL') ?? null;
+        // Check all possible sources for MYSQL_URL
+        $mysqlUrl = null;
+        
+        // Try $_ENV first (most common)
+        if (isset($_ENV['MYSQL_URL']) && !empty($_ENV['MYSQL_URL'])) {
+            $mysqlUrl = $_ENV['MYSQL_URL'];
+        } elseif (isset($_ENV['DATABASE_URL']) && !empty($_ENV['DATABASE_URL'])) {
+            $mysqlUrl = $_ENV['DATABASE_URL'];
+        } elseif (getenv('MYSQL_URL') !== false && !empty(getenv('MYSQL_URL'))) {
+            $mysqlUrl = getenv('MYSQL_URL');
+        } elseif (getenv('DATABASE_URL') !== false && !empty(getenv('DATABASE_URL'))) {
+            $mysqlUrl = getenv('DATABASE_URL');
+        }
         
         if ($mysqlUrl) {
             // Parse MySQL URL: mysql://user:password@host:port/database
@@ -36,14 +48,19 @@ class Database
             error_log("MYSQL_URL parsed - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
         } else {
             // Use individual environment variables
-            $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
-            $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? 3306;
-            $database = $_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? 'goldenpalms_crm';
-            $username = $_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? 'root';
-            $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
+            $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?? getenv('MYSQL_HOST') ?? 'localhost';
+            $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?? getenv('MYSQL_PORT') ?? 3306;
+            $database = $_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?? getenv('MYSQL_DATABASE') ?? 'goldenpalms_crm';
+            $username = $_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?? getenv('MYSQL_USER') ?? 'root';
+            $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?? getenv('MYSQL_PASSWORD') ?? '';
             
             // Log for debugging
             error_log("Using individual DB variables - host: {$host}, port: {$port}, database: {$database}");
+            
+            // Warn if using localhost (won't work on Railway)
+            if ($host === 'localhost') {
+                error_log("WARNING: Using localhost as DB_HOST - this won't work on Railway! Set DB_HOST to Railway MySQL hostname or ensure MYSQL_URL is set.");
+            }
         }
 
         // Force TCP/IP connection - prevent socket file errors on Railway
