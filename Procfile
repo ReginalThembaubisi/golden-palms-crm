@@ -1,2 +1,2 @@
-web: php server.php
+web: bash start.sh
 

@@ -1,4 +1,5 @@
 #!/bin/bash
 # Railway start script - properly expands PORT variable
-PORT=${PORT:-8080}
-exec php -S 0.0.0.0:$PORT -t . index.php
+# Railway sets PORT as environment variable
+export PORT=${PORT:-8080}
+exec php -S 0.0.0.0:${PORT} -t . index.php
