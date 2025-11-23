@@ -135,10 +135,11 @@ async function loadContactInfo() {
     try {
         // Add timeout to prevent hanging
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout (reduced)
         
         const response = await fetch(`${API_BASE_URL}/website/content?page=homepage`, {
-            signal: controller.signal
+            signal: controller.signal,
+            cache: 'no-cache'
         });
         clearTimeout(timeoutId);
         
