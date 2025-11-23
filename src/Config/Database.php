@@ -81,14 +81,12 @@ class Database
             // Debug: Log what we found
             error_log("Checking environment variables:");
             error_log("  \$_ENV['MYSQL_HOST']: " . (isset($_ENV['MYSQL_HOST']) ? 'set (' . $_ENV['MYSQL_HOST'] . ')' : 'not set'));
-            error_log("  \$_SERVER['MYSQL_HOST']: " . (isset($_SERVER['MYSQL_HOST']) ? 'set (' . $_SERVER['MYSQL_HOST'] . ')' : 'not set'));
-            error_log("  getenv('MYSQL_HOST'): " . (getenv('MYSQL_HOST') !== false ? getenv('MYSQL_HOST') : 'not set'));
+            error_log("  \$_ENV['MYSQLHOST']: " . (isset($_ENV['MYSQLHOST']) ? 'set (' . $_ENV['MYSQLHOST'] . ')' : 'not set'));
+            error_log("  getenv('MYSQLHOST'): " . (getenv('MYSQLHOST') !== false ? getenv('MYSQLHOST') : 'not set'));
             
-            // List all MYSQL_* variables found
-            $mysqlEnvVars = array_filter(array_keys($_ENV), fn($k) => strpos($k, 'MYSQL_') === 0);
-            $mysqlServerVars = array_filter(array_keys($_SERVER), fn($k) => strpos($k, 'MYSQL_') === 0);
-            error_log("  All MYSQL_* vars in \$_ENV: " . (empty($mysqlEnvVars) ? 'none' : implode(', ', $mysqlEnvVars)));
-            error_log("  All MYSQL_* vars in \$_SERVER: " . (empty($mysqlServerVars) ? 'none' : implode(', ', $mysqlServerVars)));
+            // List all MYSQL* variables found (both with and without underscores)
+            $mysqlEnvVars = array_filter(array_keys($_ENV), fn($k) => stripos($k, 'MYSQL') === 0);
+            error_log("  All MYSQL* vars in \$_ENV: " . (empty($mysqlEnvVars) ? 'none' : implode(', ', $mysqlEnvVars)));
             
             // Validate required values
             if (empty($host)) {
