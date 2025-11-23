@@ -12,7 +12,7 @@ class Database
     {
         $capsule = new Capsule;
 
-        // Support Railway MySQL connection string format
+        // Support Railway MySQL and Render PostgreSQL connection string formats
         $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? null;
         
         if ($mysqlUrl) {
