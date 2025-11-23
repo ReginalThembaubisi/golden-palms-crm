@@ -42,10 +42,15 @@ const API_BASE_URL = (window.location.hostname === 'localhost' || window.locatio
         initSmoothScroll();
         checkURLParams();
         setMinDates(); // Set minimum dates for booking forms
-        // Always load pricing - it will update rates page if on that page
-        loadPricing();
-        // Load contact information dynamically
-        loadContactInfo();
+        
+        // Load API data asynchronously without blocking page load
+        // Use setTimeout to ensure page renders first
+        setTimeout(() => {
+            // Always load pricing - it will update rates page if on that page
+            loadPricing().catch(err => console.warn('Pricing load failed:', err));
+            // Load contact information dynamically
+            loadContactInfo().catch(err => console.warn('Contact info load failed:', err));
+        }, 100);
     }
 })();
 
@@ -196,11 +201,12 @@ async function loadPricing() {
     try {
         // Add timeout to prevent hanging
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout (reduced)
         
         // Load rates page content from API
         const response = await fetch(`${API_BASE_URL}/website/content?page=rates`, {
-            signal: controller.signal
+            signal: controller.signal,
+            cache: 'no-cache'
         });
         clearTimeout(timeoutId);
         
