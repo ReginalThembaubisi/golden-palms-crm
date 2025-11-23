@@ -1,2 +1,2 @@
-web: php -S 0.0.0.0:$PORT -t . index.php
+web: sh start.sh
 

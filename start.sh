@@ -1,11 +1,4 @@
-#!/bin/sh
-# Railway startup script - handles PORT variable properly
-
-# Get PORT from environment, default to 8080
+#!/bin/bash
+# Railway start script - properly expands PORT variable
 PORT=${PORT:-8080}
-
-# Debug: Log the PORT value (will show in Railway logs)
-echo "Starting PHP server on port: $PORT"
-
-# Start PHP server
 exec php -S 0.0.0.0:$PORT -t . index.php
