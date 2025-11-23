@@ -36,11 +36,11 @@ $app->add(function (Request $request, $handler) {
             static $dbInitialized = false;
             if (!$dbInitialized && ($_ENV['AUTO_INIT_DB'] ?? 'true') === 'true') {
                 try {
-                    $capsule = \Illuminate\Database\Capsule\Manager::getInstance() ?? new \Illuminate\Database\Capsule\Manager();
+                    // After Database::initialize() calls setAsGlobal(), use static methods
                     // Test connection first
-                    $capsule->connection()->getPdo();
+                    \Illuminate\Database\Capsule\Manager::connection()->getPdo();
                     
-                    if (!$capsule->schema()->hasTable('users')) {
+                    if (!\Illuminate\Database\Capsule\Manager::schema()->hasTable('users')) {
                         // Database not initialized, run init script
                         $initScript = __DIR__ . '/database/init.php';
                         if (file_exists($initScript)) {
