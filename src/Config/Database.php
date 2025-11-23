@@ -48,30 +48,44 @@ class Database
             error_log("MYSQL_URL parsed - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
         } else {
             // Use individual environment variables
-            $host = trim($_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?? getenv('MYSQL_HOST') ?? '');
-            $port = trim($_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?? getenv('MYSQL_PORT') ?? '');
-            $database = trim($_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?? getenv('MYSQL_DATABASE') ?? '');
-            $username = trim($_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?? getenv('MYSQL_USER') ?? '');
-            $password = trim($_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?? getenv('MYSQL_PASSWORD') ?? '');
+            // Check multiple sources and variable name formats (Railway uses MYSQL_* format)
+            $host = '';
+            $port = '';
+            $database = '';
+            $username = '';
+            $password = '';
+            
+            // Try DB_* first, then MYSQL_* (Railway's format)
+            $host = trim($_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?: getenv('MYSQL_HOST') ?: '');
+            $port = trim($_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: '');
+            $database = trim($_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: '');
+            $username = trim($_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?: getenv('MYSQL_USER') ?: '');
+            $password = trim($_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '');
+            
+            // Debug: Log what we found
+            error_log("Checking environment variables:");
+            error_log("  DB_HOST: " . (isset($_ENV['DB_HOST']) ? 'set' : 'not set'));
+            error_log("  MYSQL_HOST: " . (isset($_ENV['MYSQL_HOST']) ? 'set (' . $_ENV['MYSQL_HOST'] . ')' : 'not set'));
+            error_log("  getenv('MYSQL_HOST'): " . (getenv('MYSQL_HOST') !== false ? getenv('MYSQL_HOST') : 'not set'));
             
             // Validate required values
             if (empty($host)) {
-                error_log("ERROR: DB_HOST is empty! Please set DB_HOST in Railway web service variables.");
-                throw new \RuntimeException('DB_HOST environment variable is not set. Please configure database connection in Railway.');
+                error_log("ERROR: DB_HOST/MYSQL_HOST is empty! Available env vars: " . implode(', ', array_keys($_ENV)));
+                throw new \RuntimeException('DB_HOST/MYSQL_HOST environment variable is not set. Please configure database connection in Railway.');
             }
             
             if (empty($port)) {
                 $port = '3306';
-                error_log("WARNING: DB_PORT not set, using default 3306");
+                error_log("WARNING: DB_PORT/MYSQL_PORT not set, using default 3306");
             }
             
             if (empty($database)) {
-                error_log("ERROR: DB_DATABASE is empty! Please set DB_DATABASE in Railway web service variables.");
-                throw new \RuntimeException('DB_DATABASE environment variable is not set. Please configure database connection in Railway.');
+                error_log("ERROR: DB_DATABASE/MYSQL_DATABASE is empty!");
+                throw new \RuntimeException('DB_DATABASE/MYSQL_DATABASE environment variable is not set. Please configure database connection in Railway.');
             }
             
             // Log for debugging
-            error_log("Using individual DB variables - host: {$host}, port: {$port}, database: {$database}");
+            error_log("Using individual DB variables - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
             
             // Warn if using localhost (won't work on Railway)
             if ($host === 'localhost') {
