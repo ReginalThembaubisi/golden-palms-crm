@@ -20,7 +20,8 @@ function initDatabase() {
     $capsule = new Capsule;
     
     // Support Railway MySQL connection string format
-    $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? null;
+    // Railway automatically sets MYSQL_URL when MySQL service is added
+    $mysqlUrl = $_ENV['MYSQL_URL'] ?? $_ENV['DATABASE_URL'] ?? getenv('MYSQL_URL') ?? getenv('DATABASE_URL') ?? null;
     
     if ($mysqlUrl) {
         // Parse MySQL URL: mysql://user:password@host:port/database
