@@ -35,9 +35,6 @@ RUN chmod -R 755 /app
 # Expose port (Railway will use $PORT environment variable)
 EXPOSE 8080
 
-# Make start script executable
-RUN chmod +x start.sh
-
 # Start command (Railway provides $PORT via environment variable)
 # Note: Railway will use Procfile if present, otherwise this CMD will be used
-CMD ["./start.sh"]
+CMD ["php", "server.php"]
