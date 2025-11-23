@@ -10,6 +10,7 @@ use GoldenPalms\CRM\Middleware\CorsMiddleware;
 use GoldenPalms\CRM\Middleware\AuthMiddleware;
 use GoldenPalms\CRM\Config\Database;
 use Dotenv\Dotenv;
+use Illuminate\Database\Capsule\Manager as DB;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -228,6 +229,67 @@ $app->get('/api', function (Request $request, Response $response) {
     }
     
     return $response->withHeader('Content-Type', 'application/json');
+});
+
+// Fix admin user endpoint (one-time use)
+$app->get('/api/fix-admin', function (Request $request, Response $response) {
+    try {
+        Database::initialize();
+        
+        $admin = DB::table('users')->where('username', 'admin')->first();
+        
+        if ($admin) {
+            // Update password to admin123
+            $hashedPassword = password_hash('admin123', PASSWORD_BCRYPT);
+            DB::table('users')
+                ->where('username', 'admin')
+                ->update([
+                    'password' => $hashedPassword,
+                    'is_active' => 1,
+                    'role' => 'admin'
+                ]);
+            
+            $message = "Admin user updated. Password set to 'admin123'.";
+        } else {
+            // Create admin user
+            $hashedPassword = password_hash('admin123', PASSWORD_BCRYPT);
+            DB::table('users')->insert([
+                'username' => 'admin',
+                'email' => 'admin@goldenpalmsbeachresort.com',
+                'password' => $hashedPassword,
+                'first_name' => 'Admin',
+                'last_name' => 'User',
+                'role' => 'admin',
+                'is_active' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            
+            $message = "Admin user created. Username: admin, Password: admin123";
+        }
+        
+        // Verify
+        $admin = DB::table('users')->where('username', 'admin')->first();
+        $verified = $admin && password_verify('admin123', $admin->password);
+        
+        $response->getBody()->write(json_encode([
+            'success' => true,
+            'message' => $message,
+            'verified' => $verified,
+            'login' => [
+                'username' => 'admin',
+                'password' => 'admin123'
+            ]
+        ]));
+        
+        return $response->withHeader('Content-Type', 'application/json');
+    } catch (\Exception $e) {
+        $response->getBody()->write(json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    }
 });
 
 // Serve static files - register specific routes first for better performance
