@@ -345,9 +345,13 @@ INSERT INTO `lead_sources` (`name`, `type`, `color`) VALUES
 ON DUPLICATE KEY UPDATE `name`=`name`;
 
 -- Insert default admin user (password: admin123 - CHANGE THIS!)
-INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`) VALUES
-('admin', 'admin@goldenpalmsbeachresort.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'User', 'admin')
-ON DUPLICATE KEY UPDATE `username`=`username`;
+-- Password hash generated with: password_hash('admin123', PASSWORD_BCRYPT)
+INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`, `is_active`) VALUES
+('admin', 'admin@goldenpalmsbeachresort.com', '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Admin', 'User', 'admin', 1)
+ON DUPLICATE KEY UPDATE 
+    `password` = '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+    `is_active` = 1,
+    `role` = 'admin';
 
 -- Payment transactions (detailed payment history)
 CREATE TABLE IF NOT EXISTS `payment_transactions` (
@@ -454,9 +458,13 @@ INSERT INTO `lead_sources` (`name`, `type`, `color`) VALUES
 ON DUPLICATE KEY UPDATE `name`=`name`;
 
 -- Insert default admin user (password: admin123 - CHANGE THIS!)
-INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`) VALUES
-('admin', 'admin@goldenpalmsbeachresort.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'User', 'admin')
-ON DUPLICATE KEY UPDATE `username`=`username`;
+-- Password hash generated with: password_hash('admin123', PASSWORD_BCRYPT)
+INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`, `is_active`) VALUES
+('admin', 'admin@goldenpalmsbeachresort.com', '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Admin', 'User', 'admin', 1)
+ON DUPLICATE KEY UPDATE 
+    `password` = '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+    `is_active` = 1,
+    `role` = 'admin';
 
 -- Insert sample units
 INSERT INTO `units` (`unit_number`, `unit_type`, `max_guests`, `description`, `amenities`) VALUES
