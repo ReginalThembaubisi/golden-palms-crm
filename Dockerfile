@@ -36,5 +36,5 @@ RUN chmod -R 755 /app
 EXPOSE 8080
 
 # Start command (Railway provides $PORT via environment variable)
-# Use shell form CMD to ensure PORT variable is expanded at runtime
-CMD /bin/sh -c "PORT=\${PORT:-8080} && exec php -S 0.0.0.0:\$PORT -t . index.php"
+# Note: Railway will use Procfile if present, otherwise this CMD will be used
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t . index.php"]
