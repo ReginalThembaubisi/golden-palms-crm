@@ -41,6 +41,7 @@ const API_BASE_URL = (window.location.hostname === 'localhost' || window.locatio
         initQuickBooking();
         initSmoothScroll();
         checkURLParams();
+        setMinDates(); // Set minimum dates for booking forms
         // Always load pricing - it will update rates page if on that page
         loadPricing();
         // Load contact information dynamically
@@ -511,13 +512,21 @@ if (document.querySelector('.gallery-item')) {
 }
 
 // Set minimum date for booking forms (today)
-document.addEventListener('DOMContentLoaded', function() {
+// Use the same init pattern to avoid duplicate listeners
+function setMinDates() {
     const today = new Date().toISOString().split('T')[0];
     const dateInputs = document.querySelectorAll('input[type="date"]');
     dateInputs.forEach(input => {
         input.setAttribute('min', today);
     });
-});
+}
+
+// Call it in init function instead of separate listener
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setMinDates);
+} else {
+    setMinDates();
+}
 
 // WhatsApp Integration
 function openWhatsApp(message = '') {
