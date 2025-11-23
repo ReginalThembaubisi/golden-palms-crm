@@ -33,6 +33,7 @@ class Database
             
             // Log for debugging (without sensitive info)
             error_log("Database connection: mysql://{$username}@{$host}:{$port}/{$database}");
+            error_log("MYSQL_URL parsed - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
         } else {
             // Use individual environment variables
             $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
@@ -40,6 +41,9 @@ class Database
             $database = $_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? 'goldenpalms_crm';
             $username = $_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? 'root';
             $password = $_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
+            
+            // Log for debugging
+            error_log("Using individual DB variables - host: {$host}, port: {$port}, database: {$database}");
         }
 
         // Force TCP/IP connection - prevent socket file errors on Railway
