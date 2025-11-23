@@ -48,25 +48,42 @@ class Database
             error_log("MYSQL_URL parsed - host: {$host}, port: {$port}, database: {$database}, username: {$username}");
         } else {
             // Use individual environment variables
-            // Check multiple sources and variable name formats (Railway uses MYSQL_* format)
-            $host = '';
-            $port = '';
-            $database = '';
-            $username = '';
-            $password = '';
-            
+            // Check multiple sources: $_ENV, $_SERVER, getenv() (Railway might use different sources)
             // Try DB_* first, then MYSQL_* (Railway's format)
-            $host = trim($_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? getenv('DB_HOST') ?: getenv('MYSQL_HOST') ?: '');
-            $port = trim($_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: '');
-            $database = trim($_ENV['DB_DATABASE'] ?? $_ENV['MYSQL_DATABASE'] ?? getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: '');
-            $username = trim($_ENV['DB_USERNAME'] ?? $_ENV['MYSQL_USER'] ?? getenv('DB_USERNAME') ?: getenv('MYSQL_USER') ?: '');
-            $password = trim($_ENV['DB_PASSWORD'] ?? $_ENV['MYSQL_PASSWORD'] ?? getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '');
+            
+            // Helper function to get env var from all sources
+            $getEnvVar = function($names) {
+                foreach ($names as $name) {
+                    // Try $_ENV
+                    if (isset($_ENV[$name]) && !empty($_ENV[$name])) {
+                        return trim($_ENV[$name]);
+                    }
+                    // Try $_SERVER
+                    if (isset($_SERVER[$name]) && !empty($_SERVER[$name])) {
+                        return trim($_SERVER[$name]);
+                    }
+                    // Try getenv()
+                    $value = getenv($name);
+                    if ($value !== false && !empty($value)) {
+                        return trim($value);
+                    }
+                }
+                return '';
+            };
+            
+            $host = $getEnvVar(['DB_HOST', 'MYSQL_HOST']);
+            $port = $getEnvVar(['DB_PORT', 'MYSQL_PORT']);
+            $database = $getEnvVar(['DB_DATABASE', 'MYSQL_DATABASE']);
+            $username = $getEnvVar(['DB_USERNAME', 'MYSQL_USER']);
+            $password = $getEnvVar(['DB_PASSWORD', 'MYSQL_PASSWORD']);
             
             // Debug: Log what we found
             error_log("Checking environment variables:");
-            error_log("  DB_HOST: " . (isset($_ENV['DB_HOST']) ? 'set' : 'not set'));
-            error_log("  MYSQL_HOST: " . (isset($_ENV['MYSQL_HOST']) ? 'set (' . $_ENV['MYSQL_HOST'] . ')' : 'not set'));
+            error_log("  $_ENV['MYSQL_HOST']: " . (isset($_ENV['MYSQL_HOST']) ? 'set (' . $_ENV['MYSQL_HOST'] . ')' : 'not set'));
+            error_log("  $_SERVER['MYSQL_HOST']: " . (isset($_SERVER['MYSQL_HOST']) ? 'set (' . $_SERVER['MYSQL_HOST'] . ')' : 'not set'));
             error_log("  getenv('MYSQL_HOST'): " . (getenv('MYSQL_HOST') !== false ? getenv('MYSQL_HOST') : 'not set'));
+            error_log("  All MYSQL_* vars in \$_ENV: " . implode(', ', array_filter(array_keys($_ENV), fn($k) => strpos($k, 'MYSQL_') === 0)));
+            error_log("  All MYSQL_* vars in \$_SERVER: " . implode(', ', array_filter(array_keys($_SERVER), fn($k) => strpos($k, 'MYSQL_') === 0)));
             
             // Validate required values
             if (empty($host)) {
