@@ -35,3 +35,5 @@ RUN chmod -R 755 /app
 # Render automatically sets PORT - use it directly
 CMD php -S 0.0.0.0:${PORT:-8080} -t . index.php
 
+
+

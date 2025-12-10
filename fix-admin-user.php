@@ -62,3 +62,5 @@ if ($admin && password_verify('admin123', $admin->password)) {
     echo "\n✗ Verification failed. Please check the database.\n";
 }
 
+
+

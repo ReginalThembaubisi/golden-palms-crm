@@ -1,5 +1,7 @@
 # Quick Setup Guide - Golden Palms CRM
 
+> Built under **Nexus Solutions** for Golden Palms Beach Resort
+
 ## Prerequisites Check
 
 Before starting, ensure you have:

@@ -140,6 +140,17 @@ class LeadController
             'updated_at' => Helper::now()
         ]);
 
+        // Auto-score the lead
+        \GoldenPalms\CRM\Services\LeadScoringService::updateLeadScore($leadId);
+
+        // Trigger workflows
+        \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+            'lead_created',
+            'lead',
+            $leadId,
+            ['lead' => (object)$data]
+        );
+
         // Log activity
         DB::table('activity_log')->insert([
             'user_id' => $userId,
@@ -191,6 +202,22 @@ class LeadController
         $updateData['updated_at'] = Helper::now();
 
         DB::table('leads')->where('id', $id)->update($updateData);
+
+        // Recalculate lead score if relevant fields changed
+        $scoreFields = ['status', 'priority', 'email', 'phone', 'contacted_at'];
+        if (array_intersect_key($updateData, array_flip($scoreFields))) {
+            \GoldenPalms\CRM\Services\LeadScoringService::updateLeadScore($id);
+        }
+
+        // Trigger workflow if status changed
+        if (isset($updateData['status'])) {
+            \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+                'lead_status_changed',
+                'lead',
+                $id,
+                ['old_status' => $lead->status, 'new_status' => $updateData['status']]
+            );
+        }
 
         // Log activity
         DB::table('activity_log')->insert([
@@ -465,7 +492,7 @@ class LeadController
                                 ->first();
 
                             if ($source) {
-                                DB::table('leads')->insert([
+                                $leadId = DB::table('leads')->insertGetId([
                                     'source_id' => $source->id,
                                     'first_name' => $leadInfo['first_name'] ?? $leadInfo['full_name'] ?? 'Unknown',
                                     'last_name' => $leadInfo['last_name'] ?? '',
@@ -477,6 +504,16 @@ class LeadController
                                     'message' => $leadInfo['message'] ?? null,
                                     'created_at' => Helper::now()
                                 ]);
+
+                                // Auto-score the lead
+                                \GoldenPalms\CRM\Services\LeadScoringService::updateLeadScore($leadId);
+
+                                // Trigger workflows
+                                \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+                                    'lead_created',
+                                    'lead',
+                                    $leadId
+                                );
                             }
                         }
                     }
@@ -540,6 +577,16 @@ class LeadController
             'notes' => $notes,
             'created_at' => Helper::now()
         ]);
+
+        // Auto-score the lead
+        \GoldenPalms\CRM\Services\LeadScoringService::updateLeadScore($leadId);
+
+        // Trigger workflows
+        \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+            'lead_created',
+            'lead',
+            $leadId
+        );
 
         // Send auto-reply email (implement email service)
         // TODO: Send notification email to staff

@@ -523,6 +523,13 @@ class BookingController
             'created_at' => Helper::now()
         ]);
 
+        // Trigger workflows
+        \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+            'booking_created',
+            'booking',
+            $bookingId
+        );
+
         // Log activity
         DB::table('activity_log')->insert([
             'user_id' => $userId,
@@ -581,7 +588,21 @@ class BookingController
 
         $updateData['updated_at'] = Helper::now();
 
+        // Check if status changed
+        $oldStatus = $booking->status;
+        $newStatus = $updateData['status'] ?? $oldStatus;
+
         DB::table('bookings')->where('id', $id)->update($updateData);
+
+        // Trigger workflow if status changed
+        if ($newStatus !== $oldStatus) {
+            \GoldenPalms\CRM\Services\WorkflowEngine::processTrigger(
+                'booking_status_changed',
+                'booking',
+                $id,
+                ['old_status' => $oldStatus, 'new_status' => $newStatus]
+            );
+        }
 
         // Log activity
         DB::table('activity_log')->insert([

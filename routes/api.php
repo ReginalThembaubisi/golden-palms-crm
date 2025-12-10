@@ -12,6 +12,7 @@ use GoldenPalms\CRM\Controllers\GuestController;
 use GoldenPalms\CRM\Controllers\CampaignController;
 use GoldenPalms\CRM\Controllers\ReviewController;
 use GoldenPalms\CRM\Controllers\WebsiteController;
+use GoldenPalms\CRM\Controllers\DashboardController;
 use GoldenPalms\CRM\Middleware\AuthMiddleware;
 
 return function (App $app) {
@@ -80,16 +81,7 @@ return function (App $app) {
         // Note: GET /api/website/content is public (defined above)
 
         // Dashboard
-        $group->get('/dashboard/stats', function (Request $request, Response $response) {
-            // TODO: Implement dashboard stats
-            $response->getBody()->write(json_encode([
-                'leads_today' => 0,
-                'bookings_today' => 0,
-                'occupancy_rate' => 0,
-                'revenue_month' => 0
-            ]));
-            return $response->withHeader('Content-Type', 'application/json');
-        });
+        $group->get('/dashboard/stats', [DashboardController::class, 'getStats']);
     })->add(new AuthMiddleware());
 };
 

@@ -1,6 +1,6 @@
 {
-    "name": "goldenpalms/crm",
-    "description": "Custom CRM System for Golden Palms Beach Resort",
+    "name": "nexussolutions/goldenpalms-crm",
+    "description": "Custom CRM System built under Nexus Solutions for Golden Palms Beach Resort (Demo/Prototype)",
     "type": "project",
     "require": {
         "php": "^8.1",

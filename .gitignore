@@ -33,10 +33,70 @@ public/uploads/*
 # Railway
 .railway/
 
+# Debug/Temporary Documentation Files
+*_DEBUG.md
+*_FIX.md
+*_TROUBLESHOOTING.md
+*_SETUP.md
+*_DEPLOY.md
+*_QUICK*.md
+*_URGENT*.md
+*_STATUS.md
+*_COMPLETE.md
+*_MANUAL*.md
+*_CHECKLIST.md
+*_GUIDE.md
+*_SUMMARY.md
+*_PLAN.md
+*_IMPROVEMENT*.md
+*_INTEGRATION*.md
+*_REFUSED*.md
+*_CONNECTION*.md
+*_VARIABLES*.md
+*_INSTRUCTIONS.md
+*_STEPS.md
+RUN_*.md
+SET_*.md
+TEST_*.md
+WHAT_*.md
+CHECK_*.md
+FIX_*.md
+QUICK_*.md
+URGENT_*.md
+TRIGGER_*.md
+SETUP_*.md
+IMPORT_*.md
+INTEGRATION_*.md
+CONNECTION_*.md
+DB_*.md
+RAILWAY_*.md
+RENDER_*.md
+FLYIO_*.md
+DEPLOYMENT_*.md
+PRE_*.md
+WEBSITE_*.md
+CRM_*.md
+AUTO_*.md
+ADMIN_*.md
+PERFORMANCE_*.md
+
+# Keep important documentation
+!README.md
+!SETUP.md
+!LICENSE
+!CONTRIBUTING.md
+
 # Local development scripts (optional - keep for local dev)
 # create_env_file.bat
 # setup-mailtrap.ps1
 # SETUP_XAMPP.bat
 # START_SERVER.bat
 # server-simple.php
+
+# Test files
+er.php
+test-*.php
+fix-*.php
+integrate-*.php
+start-*.php
 

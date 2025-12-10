@@ -1,6 +1,13 @@
 # Golden Palms Beach Resort - Custom CRM System
 
-A comprehensive Customer Relationship Management system built specifically for Golden Palms Beach Resort, featuring lead management, booking operations, guest database, email campaigns, and review management.
+[![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://mysql.com)
+[![Status](https://img.shields.io/badge/Status-Demo-yellow.svg)]()
+
+> **Note:** This is a demo/prototype CRM system built under **Nexus Solutions** for **Golden Palms Beach Resort**. It demonstrates core CRM functionality including lead management, booking operations, guest database, email campaigns, and review management.
+
+A comprehensive Customer Relationship Management system built under Nexus Solutions specifically for Golden Palms Beach Resort, featuring lead management, booking operations, guest database, email campaigns, and review management.
 
 ## Features
 
@@ -304,11 +311,11 @@ async function submitLead(formData) {
 
 ## Default Credentials
 
-**⚠️ IMPORTANT: Change these immediately after installation!**
+**⚠️ IMPORTANT: This is a demo system. Change these immediately after installation!**
 
 - Username: `admin`
 - Password: Set during database initialization (contact administrator for default)
-- **Security Note:** Default credentials should be changed immediately after first login
+- **Security Note:** Default credentials should be changed immediately after first login. This is a demo/prototype - do not use default credentials in production.
 
 To change the password, update it directly in the database or create a password reset feature.
 
@@ -355,6 +362,13 @@ Follow PSR-12 coding standards.
 
 ## Security Notes
 
+> **⚠️ Demo/Prototype Warning:** This is a demo system. Before production use, ensure:
+> - Complete security audit and penetration testing
+> - All default credentials are changed
+> - Proper authentication and authorization are implemented
+> - Input validation and sanitization are thoroughly tested
+> - Security headers and HTTPS are properly configured
+
 1. **Change Default Password**: Immediately change the default admin password
 2. **JWT Secret**: Use a strong, random JWT secret key
 3. **HTTPS**: Always use HTTPS in production
@@ -373,16 +387,32 @@ Follow PSR-12 coding standards.
 - [ ] Automated email sequences
 - [ ] Review platform API integration
 
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+## Security
+
+For security concerns, please see [SECURITY.md](.github/SECURITY.md) for our security policy and how to report vulnerabilities.
+
 ## Support
 
-For issues or questions, contact the development team.
+For issues or questions:
+- Open an issue on [GitHub](https://github.com/ReginalThembaubisi/golden-palms-crm/issues)
+- Contact the development team
 
 ## License
 
-Proprietary - Golden Palms Beach Resort
+Proprietary - Built under Nexus Solutions for Golden Palms Beach Resort
+
+See [LICENSE](LICENSE) for details.
+
+## Demo/Prototype Notice
+
+This is a **demo/prototype** system built for demonstration purposes. While functional, it may require additional development and testing before production use. Some features may be incomplete or require refinement.
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.0 (Demo)  
 **Last Updated**: 2024
 
