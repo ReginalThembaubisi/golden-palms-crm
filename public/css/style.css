@@ -82,6 +82,13 @@ body {
 
 .logo img {
     height: 50px;
+    max-width: 200px;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+.logo img[src*="unsplash"] {
+    border-radius: 8px;
 }
 
 .nav-menu {
@@ -199,10 +206,21 @@ body {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4a7fb8 100%);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
     padding-bottom: 200px; /* Space for hero-features at bottom */
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .hero-slide.active {
@@ -614,8 +632,24 @@ section {
     height: 280px;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.accommodation-card:hover .card-image::before {
+    opacity: 1;
 }
 
 .card-image::after {
@@ -889,6 +923,31 @@ section {
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    display: block;
+    opacity: 0;
+    animation: imageFadeIn 0.5s ease-in forwards;
+}
+
+@keyframes imageFadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Image loading state */
+.gallery-item img[loading="lazy"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: imageFadeIn 0.5s ease-in forwards, shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 .gallery-item:hover img {
@@ -1207,6 +1266,37 @@ section {
 @keyframes shine {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
+}
+
+/* Image Optimization Styles */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Responsive images */
+@media (max-width: 768px) {
+    .hero-slide {
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .card-image {
+        height: 220px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
 }
 
 /* Animations */

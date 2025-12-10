@@ -27,8 +27,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <img src="images/logo.png" alt="Golden Palms Beach Resort" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                    <span class="logo-text" style="display:none; font-size: 1.5rem; font-weight: 700; color: #d4af37;">Golden Palms</span>
+                    <img src="https://source.unsplash.com/featured/200x80/?palm,tree,logo" alt="Golden Palms Beach Resort" style="display:none;" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <span class="logo-text" style="display:inline-block; font-size: 1.5rem; font-weight: 700; color: #d4af37;">Golden Palms</span>
                 </div>
                 <button class="mobile-menu-toggle" id="mobileMenuToggle">
                     <i class="fas fa-bars"></i>
@@ -59,7 +59,7 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-slider">
-            <div class="hero-slide active">
+            <div class="hero-slide active" style="background-image: url('https://source.unsplash.com/featured/1920x1080/?beach,resort,mozambique,tropical');">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
                     <h1 class="hero-title">Golden Palms Beach Resort</h1>
@@ -169,7 +169,7 @@
             <div class="accommodation-grid">
                 <!-- 2 Bedroom Units -->
                 <div class="accommodation-card" id="accommodation-2bed">
-                    <div class="card-image" style="background-image: url('images/2bedroom.jpg'); background-color: #e8f4f8;">
+                    <div class="card-image" style="background-image: url('https://source.unsplash.com/featured/600x400/?beach,house,accommodation,villa'); background-color: #e8f4f8;">
                         <span class="card-badge">12 Units Available</span>
                     </div>
                     <div class="card-content">
@@ -193,7 +193,7 @@
 
                 <!-- 3 Bedroom Units -->
                 <div class="accommodation-card" id="accommodation-3bed">
-                    <div class="card-image" style="background-image: url('images/3bedroom.jpg'); background-color: #e8f4f8;">
+                    <div class="card-image" style="background-image: url('https://source.unsplash.com/featured/600x400/?resort,room,hotel,accommodation'); background-color: #e8f4f8;">
                         <span class="card-badge">3 Units Available</span>
                     </div>
                     <div class="card-content">
@@ -217,7 +217,7 @@
 
                 <!-- 5 Bedroom Units -->
                 <div class="accommodation-card" id="accommodation-5bed">
-                    <div class="card-image" style="background-image: url('images/5bedroom.jpg'); background-color: #e8f4f8;">
+                    <div class="card-image" style="background-image: url('https://source.unsplash.com/featured/600x400/?luxury,accommodation,resort,villa'); background-color: #e8f4f8;">
                         <span class="card-badge">5 Units Available</span>
                     </div>
                     <div class="card-content">
@@ -360,22 +360,22 @@
             </div>
             <div class="gallery-grid" id="galleryGrid">
                 <div class="gallery-item">
-                    <img src="images/gallery-1.jpg" alt="Beach view" onerror="handleImageError(this, 'Beach View')">
+                    <img src="https://source.unsplash.com/featured/800x600/?beach,tropical,paradise" alt="Beautiful beach view" loading="lazy" onerror="handleImageError(this, 'Beach View')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-2.jpg" alt="Accommodation" onerror="handleImageError(this, 'Accommodation')">
+                    <img src="https://source.unsplash.com/featured/800x600/?resort,accommodation,villa" alt="Resort accommodation" loading="lazy" onerror="handleImageError(this, 'Accommodation')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-3.jpg" alt="Activities" onerror="handleImageError(this, 'Activities')">
+                    <img src="https://source.unsplash.com/featured/800x600/?scuba,diving,underwater" alt="Scuba diving activities" loading="lazy" onerror="handleImageError(this, 'Activities')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-4.jpg" alt="Sunset" onerror="handleImageError(this, 'Sunset')">
+                    <img src="https://source.unsplash.com/featured/800x600/?beach,sunset,tropical" alt="Beautiful sunset" loading="lazy" onerror="handleImageError(this, 'Sunset')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-5.jpg" alt="Diving" onerror="handleImageError(this, 'Diving')">
+                    <img src="https://source.unsplash.com/featured/800x600/?fishing,ocean,boat" alt="Fishing activities" loading="lazy" onerror="handleImageError(this, 'Fishing')">
                 </div>
                 <div class="gallery-item">
-                    <img src="images/gallery-6.jpg" alt="Fishing" onerror="handleImageError(this, 'Fishing')">
+                    <img src="https://source.unsplash.com/featured/800x600/?beach,palm,trees,resort" alt="Resort facilities" loading="lazy" onerror="handleImageError(this, 'Resort')">
                 </div>
             </div>
         </div>
@@ -615,8 +615,53 @@
             img.onerror = null; // Prevent infinite loop
             img.style.display = 'none';
             const parent = img.parentElement;
-            parent.classList.add('gallery-placeholder');
-            parent.innerHTML = '<div class="gallery-placeholder-content"><i class="fas fa-image"></i><span>' + label + '</span></div>';
+            if (parent) {
+                parent.classList.add('gallery-placeholder');
+                parent.innerHTML = '<div class="gallery-placeholder-content"><i class="fas fa-image"></i><span>' + label + '</span></div>';
+            }
+        }
+        
+        // Enhanced image optimization and lazy loading
+        function optimizeImages() {
+            // Handle lazy-loaded images with IntersectionObserver
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.classList.add('loaded');
+                            observer.unobserve(img);
+                        }
+                    });
+                }, {
+                    rootMargin: '50px' // Start loading 50px before image enters viewport
+                });
+                
+                lazyImages.forEach(img => {
+                    imageObserver.observe(img);
+                });
+            } else {
+                // Fallback for browsers without IntersectionObserver
+                lazyImages.forEach(img => {
+                    img.classList.add('loaded');
+                });
+            }
+            
+            // Preload critical hero background image
+            const heroSlide = document.querySelector('.hero-slide');
+            if (heroSlide && heroSlide.style.backgroundImage) {
+                const bgImage = heroSlide.style.backgroundImage;
+                const urlMatch = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/);
+                if (urlMatch) {
+                    const link = document.createElement('link');
+                    link.rel = 'preload';
+                    link.as = 'image';
+                    link.href = urlMatch[1];
+                    document.head.appendChild(link);
+                }
+            }
         }
         
         // Check if background images loaded successfully
@@ -635,8 +680,16 @@
                             if (!card.classList.contains('card-image-placeholder')) {
                                 card.classList.add('card-image-placeholder');
                                 const label = card.closest('.accommodation-card')?.querySelector('h3')?.textContent || 'Accommodation';
-                                card.innerHTML = '<div class="card-placeholder-content"><i class="fas fa-home"></i><span>' + label + '</span></div>' + card.innerHTML;
+                                const badge = card.querySelector('.card-badge');
+                                card.innerHTML = '<div class="card-placeholder-content"><i class="fas fa-home"></i><span>' + label + '</span></div>';
+                                if (badge) {
+                                    card.appendChild(badge);
+                                }
                             }
+                        };
+                        img.onload = function() {
+                            // Image loaded successfully, ensure it's visible
+                            card.style.opacity = '1';
                         };
                         img.src = imgUrl;
                     }
@@ -646,6 +699,9 @@
         
         // Run after page loads
         window.addEventListener('load', function() {
+            // Optimize images (lazy loading, preloading)
+            optimizeImages();
+            
             // Check background images
             setTimeout(checkBackgroundImages, 100);
             
@@ -660,6 +716,13 @@
                 }
             }
         });
+        
+        // Also run image optimization on DOMContentLoaded for faster initial render
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', optimizeImages);
+        } else {
+            optimizeImages();
+        }
     </script>
 </body>
 </html>
